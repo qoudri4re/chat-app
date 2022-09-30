@@ -5,7 +5,6 @@ import { BsClockHistory } from "react-icons/bs";
 import { TbCircleDashed } from "react-icons/tb";
 import { GrGroup } from "react-icons/gr";
 import { RiArchiveDrawerLine } from "react-icons/ri";
-import { AiOutlineSearch } from "react-icons/ai";
 function SidebarHeader() {
   return (
     <div className="header">
