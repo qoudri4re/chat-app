@@ -1,0 +1,72 @@
+.sidebar {
+  background-color: #0079fe;
+  padding: 10px 0;
+  color: #fff;
+  padding: 10px;
+  overflow-y: scroll;
+  height: 100vh;
+}
+.sidebar .header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 20%;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.mobile-view .sidebar .header {
+  height: 18%;
+}
+.sidebar .header .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sidebar .header .top .right {
+  display: flex;
+  align-items: center;
+  width: 20%;
+  justify-content: flex-end;
+  align-items: center;
+}
+.sidebar .header .bottom {
+  display: flex;
+  justify-content: space-between;
+}
+.sidebar .header .middle {
+  display: flex;
+  justify-content: center;
+}
+.sidebar .header input {
+  width: 100%;
+  height: 30px;
+  border-radius: 2px;
+  border: none;
+  background-color: #a8c5e5;
+  padding-left: 10px;
+}
+.sidebar .header input::placeholder {
+  color: #fff;
+}
+.header .right .icon {
+  font-size: 1.8rem;
+  color: #fff;
+}
+.header .bottom .icon {
+  font-size: 22px;
+}
+.header .bottom .inactive-icon {
+  color: #a8c5e5;
+}
+.header .bottom .active-icon {
+  color: #fff;
+}
+.icon {
+  cursor: pointer;
+}
+@media (min-width: 700px) and (max-width: 1000px) {
+  .header .bottom .icon {
+    font-size: 1.3rem;
+  }
+}

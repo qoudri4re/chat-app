@@ -1,0 +1,136 @@
+.chatlist {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5%;
+  gap: 5px;
+}
+.chat-list-item {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  gap: 10px;
+  background-color: #41699f;
+  justify-content: center;
+  cursor: pointer;
+}
+.chat-list-item .left {
+  display: flex;
+  align-items: center;
+  width: 85%;
+  gap: 5%;
+}
+.chat-details {
+  display: flex;
+  flex-direction: column;
+}
+.chat-list-item img {
+  height: 45px;
+  border-radius: 50%;
+}
+.chat-list-item .new-message-count {
+  background-color: #fff;
+  color: #0079fe;
+  border-radius: 50%;
+  width: 6%;
+  height: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.mobile-view .chat-list-item .new-message-count {
+  width: 7%;
+  height: 31%;
+  font-size: 0.7rem;
+}
+.image-online-status {
+  position: relative;
+}
+.image-online-status .status-dot {
+  position: absolute;
+  bottom: 10%;
+  border-radius: 50%;
+  right: 0;
+  height: 30%;
+  width: 30%;
+}
+.image-online-status .online {
+  background-color: green;
+}
+.image-online-status .offline {
+  background-color: gray;
+}
+.hide-message-count {
+  visibility: hidden;
+}
+
+@media (max-width: 1100px) {
+  .chat-list-item .new-message-count {
+    height: 30%;
+    width: 8%;
+  }
+}
+@media (max-width: 700px) {
+  .mobile-view .chat-list-item .new-message-count {
+    width: 3%;
+  }
+}
+@media (max-width: 630px) {
+  .mobile-view .chat-list-item .new-message-count {
+    height: 25%;
+  }
+}
+@media (max-width: 530px) {
+  .mobile-view .chat-list-item .new-message-count {
+    width: 4%;
+    height: 25%;
+  }
+}
+@media (min-width: 700px) and (max-width: 1000px) {
+  .chat-list-item img {
+    height: 40px;
+  }
+  .chat-list-item {
+    gap: 5px;
+  }
+  .chat-details {
+    font-size: 0.9rem;
+  }
+  .chat-list-item .new-message-count {
+    font-size: 0.8rem;
+  }
+}
+@media (min-width: 830px) {
+  .chatlist .new-message-count {
+    width: 7%;
+  }
+}
+@media (min-width: 760px) {
+  .chat-list-item .new-message-count {
+    width: 7.5%;
+  }
+}
+@media (min-width: 1001px) {
+  .chat-list-item .new-message-count {
+    font-size: 0.9rem;
+  }
+}
+@media (min-width: 880px) {
+  .chat-list-item .new-message-count {
+    width: 7%;
+  }
+}
+@media (min-width: 900px) {
+  .chat-list-item .new-message-count {
+    width: 6%;
+  }
+}
+@media (min-width: 1000px) {
+  .chat-list-item .new-message-count {
+    width: 7.3%;
+  }
+}
+@media (min-width: 1226px) {
+  .chat-list-item .new-message-count {
+    width: 6.3%;
+  }
+}
