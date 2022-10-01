@@ -25,6 +25,9 @@ function Login() {
         setErrors
       );
     } else {
+      setErrors((preVal) =>
+        preVal.filter((item) => item.errorType !== "blank-field")
+      );
       console.log("all good");
     }
   };
