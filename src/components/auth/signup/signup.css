@@ -1,10 +1,10 @@
-.login {
+.signup {
   background-color: hsl(0deg, 100%, 74%);
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100vh;
 }
-.login .left {
+.signup .left {
   margin: auto;
   height: 15%;
   width: 80%;
@@ -14,21 +14,21 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.login .left h2 {
+.signup .left h2 {
   font-size: 1.8rem;
 }
-.login .right {
+.signup .right {
   margin: auto;
-  height: 60%;
+  height: 70%;
   width: 60%;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 4%;
 }
-.login form {
+.signup form {
   background-color: #fff;
-  height: 65%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -36,14 +36,15 @@
   padding-top: 8px;
   border-radius: 8px;
 }
-.login .error-msg {
+.signup .error-msg {
   border: 1px solid red;
   background-color: #fff;
   height: fit-content;
-  min-height: 25%;
+  min-height: 15%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 10px;
   padding-left: 10px;
   gap: 5px;
   border-radius: 8px;
@@ -54,7 +55,7 @@
   align-self: center;
 }
 form input {
-  height: 20%;
+  height: 15%;
   border-radius: 5px;
   border: 1px solid hsl(246deg, 25%, 77%);
   padding: 5px 15px;
@@ -68,7 +69,7 @@ form input::placeholder {
 form button {
   background-color: hsl(154deg, 59%, 51%);
   border: none;
-  height: 20%;
+  height: 15%;
   color: #fff;
   border-radius: 5px;
   cursor: pointer;
@@ -92,7 +93,7 @@ a:link {
   .left {
     grid-column: 1 / 3;
   }
-  .login .right {
+  .signup .right {
     grid-column: 1 / 3;
     height: 100%;
     margin: 0 auto;
