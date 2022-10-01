@@ -20,6 +20,4 @@ const randomNumber = (start, end) => {
   return Math.floor(Math.random() * end) + start;
 };
 
-module.exports = {
-  setErrorAndFilter,
-};
+export { setErrorAndFilter };
