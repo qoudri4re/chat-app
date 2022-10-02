@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./signup.css";
+import "../auth.css";
 import { Link } from "react-router-dom";
 const functions = require("../utils/functions").default;
 
@@ -63,7 +63,7 @@ function Signup() {
     }
   };
   return (
-    <div className="signup">
+    <div className="signup form-container">
       <div className="left">
         <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
         <p>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./login.css";
+import "../auth.css";
 import { Link } from "react-router-dom";
 const functions = require("../utils/functions");
 
@@ -25,6 +25,9 @@ function Login() {
         setErrors
       );
     } else {
+      //if the error exist already in the errors array, removing it.
+      //preventing error messages from displaying even after the user has corrected
+      // error
       setErrors((preVal) =>
         preVal.filter((item) => item.errorType !== "blank-field")
       );
@@ -32,7 +35,7 @@ function Login() {
     }
   };
   return (
-    <div className="login">
+    <div className="login form-container">
       <div className="left">
         <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
         <p>
@@ -69,7 +72,7 @@ function Login() {
           <button>LOGIN</button>
           <span>
             Don't have an account?
-            <Link to="/signup">SIGNUP</Link>
+            <Link to="/signup"> SIGNUP</Link>
           </span>
         </form>
       </div>
