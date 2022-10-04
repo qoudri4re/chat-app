@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import "../auth.css";
-import { Link } from "react-router-dom";
-const functions = require("../utils/functions").default;
+import { Link, useNavigate } from "react-router-dom";
+import client from "../axios-request";
+
+const functions = require("../utils/functions");
 
 function Signup() {
+  let navigate = useNavigate();
   const [formDetails, setFormDetails] = useState({
     username: "",
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState([]);
+  const [registrationStatus, setRegistrationStatus] = useState(false);
 
   //handle onchange event
   const handleChange = (e) => {
@@ -59,7 +63,37 @@ function Signup() {
       }
     }
     if (errorCount === 0) {
-      console.log("all goood");
+      //safe to send request to backend
+      client
+        .post("/signup", {
+          username: formDetails.username,
+          email: formDetails.email,
+          password: formDetails.password,
+        })
+        .then((res) => {
+          if ("error" in res.data) {
+            //something went wrong at the backend
+            let errorTypes = ["emailExist", "usernameExist", "serverError"];
+            //remove previous errors
+            setErrors((preVal) =>
+              preVal.filter((item) => errorTypes.indexOf(item.errorType) === -1)
+            );
+            res.data.error.map((item) => {
+              functions.setErrorAndFilter(
+                item.errorType,
+                item.errorMessage,
+                setErrors
+              );
+              return item;
+            });
+          } else {
+            //everything is ok
+            setRegistrationStatus(true);
+            //redirect to home page
+            setTimeout(() => navigate("/"), 1000);
+          }
+        })
+        .catch((err) => console.log(err));
     }
   };
   return (
@@ -73,15 +107,21 @@ function Signup() {
         </p>
       </div>
       <div className="right">
-        <div
-          className={
-            "error-msg" + (errors.length === 0 ? " hide-error-div" : "")
-          }
-        >
-          {errors.map((item) => (
-            <span key={item.id}>{item.errorMessage}</span>
-          ))}
-        </div>
+        {registrationStatus ? (
+          <div className="msg success">
+            <span>Registration successful. Redirecting...</span>
+          </div>
+        ) : (
+          <div
+            className={
+              "msg error" + (errors.length === 0 ? " hide-error-div" : "")
+            }
+          >
+            {errors.map((item) => (
+              <span key={item.id}>{item.errorMessage}</span>
+            ))}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -105,7 +145,7 @@ function Signup() {
             name="password"
             onChange={handleChange}
           />
-          <button>LOGIN</button>
+          <button disabled={registrationStatus}>SIGNUP</button>
           <span>
             Have an account? <Link to="/login">LOGIN</Link>
           </span>

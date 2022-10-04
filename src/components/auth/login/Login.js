@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import "../auth.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import client from "../axios-request";
 const functions = require("../utils/functions");
 
 function Login() {
+  let navigate = useNavigate();
   const [formDetails, setFormDetails] = useState({
     username: "",
     password: "",
   });
   const [errors, setErrors] = useState([]);
+  const [loginStatus, setLoginStatus] = useState(false);
 
   //handle onchange event
   const handleChange = (e) => {
@@ -27,11 +30,30 @@ function Login() {
     } else {
       //if the error exist already in the errors array, removing it.
       //preventing error messages from displaying even after the user has corrected
-      // error
+      // the error
       setErrors((preVal) =>
         preVal.filter((item) => item.errorType !== "blank-field")
       );
-      console.log("all good");
+      client
+        .post("/login", {
+          username: formDetails.username,
+          password: formDetails.password,
+        })
+        .then((res) => {
+          if ("error" in res.data) {
+            console.log(res.data.error);
+            //invalid login details
+            functions.setErrorAndFilter(
+              "invalidDetails",
+              res.data.error,
+              setErrors
+            );
+          } else {
+            setLoginStatus(true);
+            setTimeout(() => navigate("/"), 1000);
+          }
+        })
+        .catch((err) => console.log(err));
     }
   };
   return (
@@ -45,15 +67,21 @@ function Login() {
         </p>
       </div>
       <div className="right">
-        <div
-          className={
-            "error-msg" + (errors.length === 0 ? " hide-error-div" : "")
-          }
-        >
-          {errors.map((item) => (
-            <span key={item.id}>{item.errorMessage}</span>
-          ))}
-        </div>
+        {loginStatus ? (
+          <div className="msg success">
+            <span>Login successful. Redirecting...</span>
+          </div>
+        ) : (
+          <div
+            className={
+              "msg error" + (errors.length === 0 ? " hide-error-div" : "")
+            }
+          >
+            {errors.map((item) => (
+              <span key={item.id}>{item.errorMessage}</span>
+            ))}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -69,7 +97,7 @@ function Login() {
             name="password"
             onChange={handleChange}
           />
-          <button>LOGIN</button>
+          <button disabled={loginStatus}>LOGIN</button>
           <span>
             Don't have an account?
             <Link to="/signup"> SIGNUP</Link>
