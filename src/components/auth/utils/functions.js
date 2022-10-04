@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 //sets error and filters out redundant error message
 const setErrorAndFilter = (errorType, errorMessage, setErrors) => {
   setErrors((prevVal) => {
@@ -8,16 +10,12 @@ const setErrorAndFilter = (errorType, errorMessage, setErrors) => {
     return [
       ...newVal,
       {
-        id: randomNumber(1, 10) + randomNumber(0, 10),
+        id: uuidv4(),
         errorType: errorType,
         errorMessage: errorMessage,
       },
     ];
   });
-};
-
-const randomNumber = (start, end) => {
-  return Math.floor(Math.random() * end) + start;
 };
 
 export { setErrorAndFilter };
