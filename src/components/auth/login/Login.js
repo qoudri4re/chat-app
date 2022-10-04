@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import client from "../axios-request";
-const functions = require("../utils/functions");
+import {
+  retrieveUserDetailsFromLocalStorage,
+  setErrorAndFilter,
+  saveUserDetailsToLocalStorage,
+} from "../utils/functions";
 
 function Login() {
   let navigate = useNavigate();
+  const userDetails = retrieveUserDetailsFromLocalStorage();
+  useEffect(() => {
+    if (userDetails) {
+      console.log("redirecting");
+      navigate("/");
+    }
+  }, [navigate, userDetails]);
+
   const [formDetails, setFormDetails] = useState({
     username: "",
     password: "",
@@ -22,11 +34,7 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formDetails.username === "" || formDetails.password === "") {
-      functions.setErrorAndFilter(
-        "blank-field",
-        "All fields must be filled!",
-        setErrors
-      );
+      setErrorAndFilter("blank-field", "All fields must be filled!", setErrors);
     } else {
       //if the error exist already in the errors array, removing it.
       //preventing error messages from displaying even after the user has corrected
@@ -43,12 +51,11 @@ function Login() {
           if ("error" in res.data) {
             console.log(res.data.error);
             //invalid login details
-            functions.setErrorAndFilter(
-              "invalidDetails",
-              res.data.error,
-              setErrors
-            );
+            setErrorAndFilter("invalidDetails", res.data.error, setErrors);
           } else {
+            console.log(res.data);
+            //save recieved details into local storage
+            saveUserDetailsToLocalStorage(res.data, 3600000);
             setLoginStatus(true);
             setTimeout(() => navigate("/"), 1000);
           }
@@ -56,56 +63,58 @@ function Login() {
         .catch((err) => console.log(err));
     }
   };
-  return (
-    <div className="login form-container">
-      <div className="left">
-        <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
-        <p>
-          Lorem ipsum elor cit doremk ji plocato jdu rty tyi mono gro proco to
-          blo mo crudito duid, see how oyhej dyf yryrr rfr yyry ryryr yryg gjghg
-          hfhfh fyfyfy fhyfyf
-        </p>
+  if (!userDetails) {
+    return (
+      <div className="login form-container">
+        <div className="left">
+          <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
+          <p>
+            Lorem ipsum elor cit doremk ji plocato jdu rty tyi mono gro proco to
+            blo mo crudito duid, see how oyhej dyf yryrr rfr yyry ryryr yryg
+            gjghg hfhfh fyfyfy fhyfyf
+          </p>
+        </div>
+        <div className="right">
+          {loginStatus ? (
+            <div className="msg success">
+              <span>Login successful. Redirecting...</span>
+            </div>
+          ) : (
+            <div
+              className={
+                "msg error" + (errors.length === 0 ? " hide-error-div" : "")
+              }
+            >
+              {errors.map((item) => (
+                <span key={item.id}>{item.errorMessage}</span>
+              ))}
+            </div>
+          )}
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="username"
+              value={formDetails.username}
+              name="username"
+              onChange={handleChange}
+            />
+            <input
+              type="password"
+              placeholder="password"
+              value={formDetails.password}
+              name="password"
+              onChange={handleChange}
+            />
+            <button disabled={loginStatus}>LOGIN</button>
+            <span>
+              Don't have an account?
+              <Link to="/signup"> SIGNUP</Link>
+            </span>
+          </form>
+        </div>
       </div>
-      <div className="right">
-        {loginStatus ? (
-          <div className="msg success">
-            <span>Login successful. Redirecting...</span>
-          </div>
-        ) : (
-          <div
-            className={
-              "msg error" + (errors.length === 0 ? " hide-error-div" : "")
-            }
-          >
-            {errors.map((item) => (
-              <span key={item.id}>{item.errorMessage}</span>
-            ))}
-          </div>
-        )}
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="username"
-            value={formDetails.username}
-            name="username"
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            placeholder="password"
-            value={formDetails.password}
-            name="password"
-            onChange={handleChange}
-          />
-          <button disabled={loginStatus}>LOGIN</button>
-          <span>
-            Don't have an account?
-            <Link to="/signup"> SIGNUP</Link>
-          </span>
-        </form>
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default Login;
