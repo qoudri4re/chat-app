@@ -5,6 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("./database/connection");
 const User = require("./database/models/models").User;
 
@@ -22,6 +23,7 @@ app.use(
  * returns the details of the registered user if there's no
  * error otherwise it returns an array of error
  */
+
 app.post("/users/signup", async (req, res) => {
   let errors = [];
   // the user details from the request
@@ -46,15 +48,34 @@ app.post("/users/signup", async (req, res) => {
 
   if (errors.length === 0) {
     //no errors, username and email do not exist
-    //saving the user
-    const newUser = new User({
-      username,
-      email,
-      password,
-    });
-    newUser.save((err, newUserDoc) => {
-      if (err) {
-        console.log(err);
+    jwt.sign({ username }, "secretkey", { expiresIn: "1h" }, (err, token) => {
+      if (!err) {
+        //saving the user
+        const newUser = new User({
+          username,
+          email,
+          password,
+        });
+        newUser.save((err, newUserDoc) => {
+          if (err) {
+            console.log(err);
+            res.send({
+              error: [
+                {
+                  errorType: "serverError",
+                  errorMessage: "Something went wrong, please try again",
+                },
+              ],
+            });
+          } else {
+            res.send({
+              userID: newUserDoc._id,
+              username: newUserDoc.username,
+              token,
+            });
+          }
+        });
+      } else {
         res.send({
           error: [
             {
@@ -62,10 +83,6 @@ app.post("/users/signup", async (req, res) => {
               errorMessage: "Something went wrong, please try again",
             },
           ],
-        });
-      } else {
-        res.send({
-          newUserDoc,
         });
       }
     });
@@ -82,13 +99,26 @@ app.post("/users/signup", async (req, res) => {
  * recieves - username - password
  *
  */
+
 app.post("/users/login", async (req, res) => {
   const { username, password } = req.body;
 
   const userDetails = await User.findOne({ username });
   if (userDetails) {
     if (userDetails.password === password) {
-      res.send(userDetails);
+      jwt.sign({ username }, "secretkey", { expiresIn: "1h" }, (err, token) => {
+        if (!err) {
+          res.send({
+            userID: userDetails._id,
+            username: userDetails.username,
+            token,
+          });
+        } else {
+          res.send({
+            error: "Something went wrong",
+          });
+        }
+      });
     } else {
       res.send({
         error: "invalid email or password",
