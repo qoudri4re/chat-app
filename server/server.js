@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -9,6 +10,7 @@ const jwt = require("jsonwebtoken");
 require("./database/connection");
 const User = require("./database/models/models").User;
 
+const jwtSecretKey = process.env.JWT_SECRET_KEY;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -48,7 +50,7 @@ app.post("/users/signup", async (req, res) => {
 
   if (errors.length === 0) {
     //no errors, username and email do not exist
-    jwt.sign({ username }, "secretkey", { expiresIn: "1h" }, (err, token) => {
+    jwt.sign({ username }, jwtSecretKey, { expiresIn: "1h" }, (err, token) => {
       if (!err) {
         //saving the user
         const newUser = new User({
@@ -106,19 +108,24 @@ app.post("/users/login", async (req, res) => {
   const userDetails = await User.findOne({ username });
   if (userDetails) {
     if (userDetails.password === password) {
-      jwt.sign({ username }, "secretkey", { expiresIn: "1h" }, (err, token) => {
-        if (!err) {
-          res.send({
-            userID: userDetails._id,
-            username: userDetails.username,
-            token,
-          });
-        } else {
-          res.send({
-            error: "Something went wrong",
-          });
+      jwt.sign(
+        { username },
+        jwtSecretKey,
+        { expiresIn: "1h" },
+        (err, token) => {
+          if (!err) {
+            res.send({
+              userID: userDetails._id,
+              username: userDetails.username,
+              token,
+            });
+          } else {
+            res.send({
+              error: "Something went wrong",
+            });
+          }
         }
-      });
+      );
     } else {
       res.send({
         error: "invalid email or password",

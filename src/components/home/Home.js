@@ -20,10 +20,7 @@ function Home() {
   const userDetails = retrieveUserDetailsFromLocalStorage();
   useEffect(() => {
     if (!userDetails) {
-      console.log("redirecting");
       navigate("/login");
-    } else {
-      console.log("not redirecting");
     }
   }, [navigate, userDetails]);
   const [windowSize, setWindowSize] = useState(getWindowSize());

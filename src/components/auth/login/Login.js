@@ -10,7 +10,12 @@ import {
 
 function Login() {
   let navigate = useNavigate();
-  const userDetails = retrieveUserDetailsFromLocalStorage();
+  const [userDetails, setUserDetails] = useState(null);
+
+  useEffect(() => {
+    setUserDetails(retrieveUserDetailsFromLocalStorage());
+  }, []);
+
   useEffect(() => {
     if (userDetails) {
       console.log("redirecting");

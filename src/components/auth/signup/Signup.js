@@ -11,14 +11,19 @@ import {
 
 function Signup() {
   let navigate = useNavigate();
-  const userDetails = retrieveUserDetailsFromLocalStorage();
+  const [userDetails, setUserDetails] = useState(null);
+
+  useEffect(() => {
+    setUserDetails(retrieveUserDetailsFromLocalStorage());
+  }, []);
+
   useEffect(() => {
     if (userDetails) {
-      console.log("redirecting");
       navigate("/");
     }
   }, [navigate, userDetails]);
 
+  useEffect(() => {});
   const [formDetails, setFormDetails] = useState({
     username: "",
     email: "",
@@ -92,7 +97,6 @@ function Signup() {
             });
           } else {
             //everything is ok
-            console.log(res.data);
             setRegistrationStatus(true);
             //saved recieved details into local storage
             saveUserDetailsToLocalStorage(res.data, 3600000);
