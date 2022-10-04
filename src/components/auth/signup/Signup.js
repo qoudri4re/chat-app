@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import client from "../axios-request";
 
-const functions = require("../utils/functions");
+import {
+  retrieveUserDetailsFromLocalStorage,
+  setErrorAndFilter,
+  saveUserDetailsToLocalStorage,
+} from "../utils/functions";
 
 function Signup() {
   let navigate = useNavigate();
+  const userDetails = retrieveUserDetailsFromLocalStorage();
+  useEffect(() => {
+    if (userDetails) {
+      console.log("redirecting");
+      navigate("/");
+    }
+  }, [navigate, userDetails]);
+
   const [formDetails, setFormDetails] = useState({
     username: "",
     email: "",
@@ -30,15 +42,11 @@ function Signup() {
       formDetails.username === ""
     ) {
       errorCount += 1;
-      functions.setErrorAndFilter(
-        "blank-field",
-        "All fields must be filled!",
-        setErrors
-      );
+      setErrorAndFilter("blank-field", "All fields must be filled!", setErrors);
     } else {
       if (formDetails.username.length > 20) {
         errorCount += 1;
-        functions.setErrorAndFilter(
+        setErrorAndFilter(
           "usernameError",
           "Username must be less than 20 characters",
           setErrors
@@ -51,7 +59,7 @@ function Signup() {
       }
       if (formDetails.password.length < 8) {
         errorCount += 1;
-        functions.setErrorAndFilter(
+        setErrorAndFilter(
           "passwordError",
           "Password must be 8 characters or more",
           setErrors
@@ -79,16 +87,15 @@ function Signup() {
               preVal.filter((item) => errorTypes.indexOf(item.errorType) === -1)
             );
             res.data.error.map((item) => {
-              functions.setErrorAndFilter(
-                item.errorType,
-                item.errorMessage,
-                setErrors
-              );
+              setErrorAndFilter(item.errorType, item.errorMessage, setErrors);
               return item;
             });
           } else {
             //everything is ok
+            console.log(res.data);
             setRegistrationStatus(true);
+            //saved recieved details into local storage
+            saveUserDetailsToLocalStorage(res.data, 3600000);
             //redirect to home page
             setTimeout(() => navigate("/"), 1000);
           }
@@ -96,63 +103,65 @@ function Signup() {
         .catch((err) => console.log(err));
     }
   };
-  return (
-    <div className="signup form-container">
-      <div className="left">
-        <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
-        <p>
-          Lorem ipsum elor cit doremk ji plocato jdu rty tyi mono gro proco to
-          blo mo crudito duid, see how oyhej dyf yryrr rfr yyry ryryr yryg gjghg
-          hfhfh fyfyfy fhyfyf
-        </p>
+  if (!userDetails) {
+    return (
+      <div className="signup form-container">
+        <div className="left">
+          <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
+          <p>
+            Lorem ipsum elor cit doremk ji plocato jdu rty tyi mono gro proco to
+            blo mo crudito duid, see how oyhej dyf yryrr rfr yyry ryryr yryg
+            gjghg hfhfh fyfyfy fhyfyf
+          </p>
+        </div>
+        <div className="right">
+          {registrationStatus ? (
+            <div className="msg success">
+              <span>Registration successful. Redirecting...</span>
+            </div>
+          ) : (
+            <div
+              className={
+                "msg error" + (errors.length === 0 ? " hide-error-div" : "")
+              }
+            >
+              {errors.map((item) => (
+                <span key={item.id}>{item.errorMessage}</span>
+              ))}
+            </div>
+          )}
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="username"
+              value={formDetails.username}
+              onChange={handleChange}
+              name="username"
+            />
+            <input
+              type="email"
+              placeholder="email"
+              value={formDetails.email}
+              name="email"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              placeholder="password"
+              value={formDetails.password}
+              name="password"
+              onChange={handleChange}
+            />
+            <button disabled={registrationStatus}>SIGNUP</button>
+            <span>
+              Have an account? <Link to="/login">LOGIN</Link>
+            </span>
+          </form>
+        </div>
       </div>
-      <div className="right">
-        {registrationStatus ? (
-          <div className="msg success">
-            <span>Registration successful. Redirecting...</span>
-          </div>
-        ) : (
-          <div
-            className={
-              "msg error" + (errors.length === 0 ? " hide-error-div" : "")
-            }
-          >
-            {errors.map((item) => (
-              <span key={item.id}>{item.errorMessage}</span>
-            ))}
-          </div>
-        )}
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="username"
-            value={formDetails.username}
-            onChange={handleChange}
-            name="username"
-          />
-          <input
-            type="email"
-            placeholder="email"
-            value={formDetails.email}
-            name="email"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            placeholder="password"
-            value={formDetails.password}
-            name="password"
-            onChange={handleChange}
-          />
-          <button disabled={registrationStatus}>SIGNUP</button>
-          <span>
-            Have an account? <Link to="/login">LOGIN</Link>
-          </span>
-        </form>
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default Signup;
