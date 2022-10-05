@@ -58,7 +58,6 @@ function Login() {
             //invalid login details
             setErrorAndFilter("invalidDetails", res.data.error, setErrors);
           } else {
-            console.log(res.data);
             //save recieved details into local storage
             saveUserDetailsToLocalStorage(res.data, 3600000);
             setLoginStatus(true);
