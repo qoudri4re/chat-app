@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://react-project-chat-app.netlify.app/",
+      "https://react-project-chat-app.netlify.app",
     ],
   })
 );
