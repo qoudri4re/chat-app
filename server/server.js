@@ -19,10 +19,6 @@ app.use(
   })
 );
 
-app.get("/test", (req, res) => {
-  res.send("wprking");
-});
-
 /**
  * the sign up endpoint
  * recieves - username, - email, - password
