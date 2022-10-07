@@ -13,8 +13,8 @@ function verifyHeaderToken(req, res, next) {
     req.token = jwtToken;
     next();
   } else {
-    res.send({ error: "Invalid request token" });
+    res.send({ tokenError: "invalid request header token" });
   }
 }
 
-export { verifyHeaderToken };
+module.exports = { verifyHeaderToken };
