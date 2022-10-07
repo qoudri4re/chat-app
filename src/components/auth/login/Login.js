@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../auth.css";
 import { Link, useNavigate } from "react-router-dom";
-import client from "../axios-request";
+import { client } from "../../../utils/axios-request";
 import {
   retrieveUserDetailsFromLocalStorage,
   setErrorAndFilter,
@@ -18,7 +18,6 @@ function Login() {
 
   useEffect(() => {
     if (userDetails) {
-      console.log("redirecting");
       navigate("/");
     }
   }, [navigate, userDetails]);
