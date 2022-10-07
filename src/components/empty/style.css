@@ -1,0 +1,26 @@
+.empty-container {
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.empty-container .content {
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+
+  height: 90%;
+  align-items: center;
+  justify-content: center;
+}
+.empty-container .content img {
+  height: 200px;
+  width: 60%;
+  align-self: center;
+}
+.empty-container button {
+  height: 10%;
+  border-radius: 15px;
+  width: 50%;
+  border: none;
+}
