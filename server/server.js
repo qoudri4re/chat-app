@@ -9,6 +9,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("./database/connection");
 const User = require("./database/models/models").User;
+const { verifyHeaderToken } = require("./utils/functions");
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 app.use(express.json());
@@ -139,6 +140,39 @@ app.post("/users/login", async (req, res) => {
       error: "Invalid username or password",
     });
   }
+});
+
+/**
+ *
+ * recieves userID and sends back the all the user's frinds details
+ *
+ */
+app.get("/users/:userID/friends", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      //the request token has expired
+      res.send({ tokenError: "invalid request token" });
+    } else {
+      try {
+        const userDetails = await User.findOne({ _id: req.params.userID });
+
+        if (userDetails.friendsId.length > 0) {
+          //the user has friends
+          const friendsIds = userDetails.friendsId;
+          const friendsDetails = await User.find(
+            { _id: { $in: friendsIds } },
+            { password: 0, friendsId: 0 } //wont return these fields
+          );
+          res.send(friendsDetails);
+        } else {
+          res.send([]);
+        }
+      } catch (error) {
+        console.log("error at the user details endpoint", error);
+        res.send({ error: "something went wrong" });
+      }
+    }
+  });
 });
 
 io.on("connection", (socket) => {
