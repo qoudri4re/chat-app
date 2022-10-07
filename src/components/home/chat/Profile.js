@@ -5,7 +5,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { BiUser } from "react-icons/bi";
 import { MdCall } from "react-icons/md";
 
-function Profile({ showOrCloseProfile }) {
+function Profile({ showOrCloseProfile, currentChat }) {
   return (
     <div className="profile">
       <div className="profile-item head">
@@ -14,7 +14,7 @@ function Profile({ showOrCloseProfile }) {
       <div className="profile-item picture">
         <img src={default_image} alt="" />
         <div className="details">
-          <h3>Richard Henfrics</h3>
+          <h3>{currentChat.username}</h3>
           <span>online</span>
         </div>
       </div>
@@ -22,21 +22,21 @@ function Profile({ showOrCloseProfile }) {
         <div className="user-info-item">
           <MdCall className="icon" />
           <div className="info">
-            <span>08238485</span>
-            <span>phone number</span>
+            <span>{currentChat.email}</span>
+            <span>email</span>
           </div>
         </div>
         <div className="user-info-item">
           <BiUser className="icon" />
           <div className="info">
-            <span>08238485</span>
+            <span>{currentChat.username}</span>
             <span>username</span>
           </div>
         </div>
         <div className="user-info-item">
           <IoMdNotifications className="icon" />
           <div className="info">
-            <span>08238485</span>
+            <span>{currentChat.username}</span>
             <span>notification</span>
           </div>
         </div>

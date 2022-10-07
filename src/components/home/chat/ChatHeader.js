@@ -3,7 +3,12 @@ import { MdCall } from "react-icons/md";
 import { HiOutlineVideoCamera } from "react-icons/hi";
 import default_image from "../sidebar/chatlist/default-image.jpg";
 import { BsArrowLeftShort } from "react-icons/bs";
-function ChatHeader({ showOrCloseProfile, closeChatArrow, windowSize }) {
+function ChatHeader({
+  showOrCloseProfile,
+  closeChatArrow,
+  windowSize,
+  currentChat,
+}) {
   return (
     <div className="chat-header">
       <div className="left">
@@ -14,7 +19,7 @@ function ChatHeader({ showOrCloseProfile, closeChatArrow, windowSize }) {
           <img src={default_image} alt="" onClick={showOrCloseProfile} />
         </div>
         <div className="username-status" onClick={showOrCloseProfile}>
-          <h3>somebody somebody</h3>
+          <h3>{currentChat.username}</h3>
           <span>online</span>
         </div>
       </div>

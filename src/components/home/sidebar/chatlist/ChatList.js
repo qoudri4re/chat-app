@@ -1,17 +1,16 @@
 import React from "react";
 import ChatListItem from "./ChatListItem";
 import "./chatList.css";
-import chatData from "../../../../data/chatData";
 
-function ChatList({ handleChatClick }) {
-  let ChatListItems = chatData.map((item) => {
+function ChatList({ handleChatClick, friendsDetails }) {
+  let ChatListItems = friendsDetails.map((item) => {
     return (
       <ChatListItem
-        key={item.id}
-        id={item.id}
+        key={item._id}
+        id={item._id}
         username={item.username}
-        lastMessage={item.lastMessage}
-        unreadMessageCount={item.unreadMessageCount}
+        lastMessage={"last message"}
+        unreadMessageCount={5}
         handleChatClick={handleChatClick}
       />
     );
