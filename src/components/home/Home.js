@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "./sidebar/Sidebar";
 import Chat from "./chat/Chat";
 import "./home.css";
@@ -8,6 +8,7 @@ import {
 } from "./utils/functions";
 import { useNavigate } from "react-router-dom";
 import { client, requestHeaderConfig } from "../../utils/axios-request";
+import { io } from "socket.io-client";
 
 function Home() {
   let navigate = useNavigate();
@@ -27,8 +28,9 @@ function Home() {
 
   //set back to null, to do loading compontnt
   const [friendsDetails, setFriendsDetails] = useState([]);
+  const [updateSideBar, setUpdateSideBar] = useState(false);
+  const socket = useRef();
 
-  //TODO clean up useffect
   useEffect(() => {
     //fetch the user's friends details
     if (userDetails) {
@@ -47,8 +49,24 @@ function Home() {
           }
         })
         .catch((err) => console.log(err));
+      if (updateSideBar) {
+        setUpdateSideBar(false);
+      }
     }
-  }, [userDetails, setUserDetails]);
+  }, [userDetails, setUserDetails, updateSideBar]);
+
+  useEffect(() => {
+    if (userDetails) {
+      socket.current = io("http://localhost:3001");
+      socket.current.emit("add-user", userDetails.userID);
+    }
+  }, [userDetails]);
+
+  const handleTabClose = (event) => {
+    socket.current.emit("close", userDetails.userID);
+  };
+
+  window.addEventListener("beforeunload", handleTabClose);
 
   const handleChatClick = (id) => {
     const whichChatWasClicked = friendsDetails.filter(
@@ -82,6 +100,10 @@ function Home() {
               closeChatArrow={closeChatArrow}
               windowSize={windowSize}
               currentChat={currentChat}
+              userDetails={userDetails}
+              setUserDetails={setUserDetails}
+              socket={socket}
+              setUpdateSideBar={setUpdateSideBar}
             />
           ) : (
             <Sidebar
@@ -108,6 +130,10 @@ function Home() {
               windowSize={windowSize}
               closeChatArrow={closeChatArrow}
               currentChat={currentChat}
+              userDetails={userDetails}
+              setUserDetails={setUserDetails}
+              socket={socket}
+              setUpdateSideBar={setUpdateSideBar}
             />
           ) : (
             ""

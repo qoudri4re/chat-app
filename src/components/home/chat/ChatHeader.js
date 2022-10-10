@@ -20,7 +20,6 @@ function ChatHeader({
         </div>
         <div className="username-status" onClick={showOrCloseProfile}>
           <h3>{currentChat.username}</h3>
-          <span>online</span>
         </div>
       </div>
       <div className="right">

@@ -16,7 +16,6 @@ function ChatList({
         </div>
         <div className="chat-details">
           <h3>{username}</h3>
-          <p>{lastMessage}</p>
         </div>
       </div>
       {unreadMessageCount > 0 ? (

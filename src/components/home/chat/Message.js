@@ -1,11 +1,11 @@
 import React from "react";
 
-function Message({ senderOrReciever }) {
+function Message({ senderOrReciever, message, timeSent }) {
   return (
     <div className={`message-container ${senderOrReciever}`}>
       <div className={"message"}>
-        <p>this is a message</p>
-        <span>11:30am</span>
+        <p>{message}</p>
+        <span></span>
       </div>
     </div>
   );

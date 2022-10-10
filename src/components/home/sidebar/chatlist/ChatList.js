@@ -2,6 +2,7 @@ import React from "react";
 import ChatListItem from "./ChatListItem";
 import "./chatList.css";
 import EmptyChat from "../../../empty/EmptyChat";
+
 function ChatList({ handleChatClick, friendsDetails }) {
   if (friendsDetails.length === 0) {
     return <EmptyChat />;

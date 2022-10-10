@@ -4,11 +4,20 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
 const cors = require("cors");
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "http://localhost:3000",
+      "https://react-project-chat-app.netlify.app",
+    ],
+  },
+});
+
 const jwt = require("jsonwebtoken");
 require("./database/connection");
 const User = require("./database/models/models").User;
+const Chat = require("./database/models/models").Chat;
 const { verifyHeaderToken } = require("./utils/functions");
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
@@ -175,8 +184,95 @@ app.get("/users/:userID/friends", verifyHeaderToken, (req, res) => {
   });
 });
 
+/**
+ * send message endpoint
+ * recieves message, sender's id and the recievers Id
+ * saves the details into the database with a timestamp
+ * sends back the saved chat after saving
+ */
+app.post("/users/sendMessage", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ error: "invalid request token" });
+    } else {
+      const { to, from, message } = req.body;
+      const sender = await User.findOne({ _id: from });
+      const reciever = await User.findOne({ _id: to });
+
+      if (sender.friendsId.indexOf(reciever._id) === -1) {
+        sender.friendsId = [...sender.friendsId, to];
+        sender.save();
+      }
+      if (reciever.friendsId.indexOf(sender._id) === -1) {
+        reciever.friendsId = [...reciever.friendsId, from];
+        reciever.save();
+      }
+      const newChat = new Chat({
+        message,
+        users: [from, to],
+        senderID: from,
+      });
+      newChat.save((err, newChatDoc) => {
+        if (err) {
+          res.send({ error: "Something went wrong please try again" });
+        } else {
+          res.send(newChatDoc);
+        }
+      });
+    }
+  });
+});
+
+/**
+ * the get message endpoint
+ * retrieves messages between two specified users
+ */
+app.post("/users/getMessages", verifyHeaderToken, async (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ error: "Invalid request token" });
+    } else {
+      const { from, to } = req.body;
+      try {
+        const messages = await Chat.find({ users: { $all: [from, to] } });
+        res.send(messages);
+      } catch (error) {
+        console.log(error);
+        res.send({ error: "something went wrong please try again" });
+      }
+    }
+  });
+});
+
+app.get("/users/all-users", verifyHeaderToken, async (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ error: "Invalid request token" });
+    } else {
+      try {
+        const allUsers = await User.find();
+        res.send(allUsers);
+      } catch (err) {
+        console.log(err);
+        res.send({ error: "something went wrong" });
+      }
+    }
+  });
+});
+
+let onlineUsers = new Map();
+
 io.on("connection", (socket) => {
-  console.log("user connected");
+  global.chatSocket = socket;
+  socket.on("add-user", (userID) => {
+    onlineUsers.set(userID, socket.id);
+  });
+  socket.on("send-message", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("recieve-message", data);
+    }
+  });
 });
 
 server.listen(3001, () => {

@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./chat.css";
 import ChatHeader from "./ChatHeader";
 import ChatArea from "./ChatArea";
 import SendMessage from "./SendMessage";
 import Profile from "./Profile";
 
-function Chat({ closeChatArrow, windowSize, currentChat }) {
+function Chat({
+  closeChatArrow,
+  windowSize,
+  currentChat,
+  userDetails,
+  setUserDetails,
+  socket,
+  setUpdateSideBar,
+}) {
   //maintain profile component display
   const [displayProfile, setDisplayProfile] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   //handles how the profile component is displayed or hidden
   const showOrCloseProfile = () => {
     setDisplayProfile(!displayProfile);
   };
+
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("recieve-message", (messageData) => {
+        setMessages((prevValue) => [...prevValue, messageData]);
+        setUpdateSideBar(true);
+      });
+    }
+  }, [socket, setUpdateSideBar]);
 
   return (
     <div
@@ -27,8 +45,22 @@ function Chat({ closeChatArrow, windowSize, currentChat }) {
           closeChatArrow={closeChatArrow}
           currentChat={currentChat}
         />
-        <ChatArea />
-        <SendMessage />
+        <ChatArea
+          userDetails={userDetails}
+          currentChat={currentChat}
+          setUserDetails={setUserDetails}
+          messages={messages}
+          setMessages={setMessages}
+        />
+        <SendMessage
+          currentChat={currentChat}
+          userDetails={userDetails}
+          setUserDetails={setUserDetails}
+          socket={socket}
+          messages={messages}
+          setMessages={setMessages}
+          setUpdateSideBar={setUpdateSideBar}
+        />
       </div>
       {displayProfile ? (
         <Profile

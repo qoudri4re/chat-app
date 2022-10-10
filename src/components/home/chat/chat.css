@@ -5,6 +5,9 @@
   height: 100%;
 }
 
+.chat .chat-components {
+  height: 100%;
+}
 .chat .chat-header {
   display: flex;
   justify-content: space-between;
@@ -89,7 +92,8 @@
   display: flex;
   flex-direction: column;
   gap: 6%;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
+  overflow: auto;
 }
 .chat-area .message-container {
   background-color: yellow;
@@ -254,7 +258,7 @@
 }
 .chat-without-profile .send-message {
   width: 72.9%;
-  height: 12%;
+  height: 10%;
   align-items: center;
   justify-content: space-around;
 }

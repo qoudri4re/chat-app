@@ -8,7 +8,6 @@ function EmptyChat() {
       <div className="content">
         <img src={emptyChat} alt="" />
         <span>You have no friends</span>
-        <button>Search for friends</button>
       </div>
     </div>
   );

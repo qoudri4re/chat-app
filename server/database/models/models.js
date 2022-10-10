@@ -5,11 +5,22 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   friendsId: [{ type: String }],
-  onlineStatus: String,
 });
 
-const User = mongoose.model("User", userSchema);
+const chatSchema = new mongoose.Schema(
+  {
+    message: String,
+    users: Array,
+    senderID: String,
+  },
+  {
+    timestamps: true,
+  }
+);
 
+const User = mongoose.model("User", userSchema);
+const Chat = mongoose.model("Chat", chatSchema);
 module.exports = {
   User,
+  Chat,
 };
