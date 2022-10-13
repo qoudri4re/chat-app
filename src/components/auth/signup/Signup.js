@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import { client } from "../../../utils/axios-request";
+import WaveLoading from "../../loaders/WaveLoading";
 
 import {
   retrieveUserDetailsFromLocalStorage,
@@ -31,6 +32,8 @@ function Signup() {
   });
   const [errors, setErrors] = useState([]);
   const [registrationStatus, setRegistrationStatus] = useState(false);
+  const [displayLoaderAfterSubmiting, setDisplayLoadAfterSubmiting] =
+    useState(false);
 
   //handle onchange event
   const handleChange = (e) => {
@@ -77,6 +80,7 @@ function Signup() {
     }
     if (errorCount === 0) {
       //safe to send request to backend
+      setDisplayLoadAfterSubmiting(true);
       client
         .post("/signup", {
           username: formDetails.username,
@@ -86,6 +90,7 @@ function Signup() {
         .then((res) => {
           if ("error" in res.data) {
             //something went wrong at the backend
+            setDisplayLoadAfterSubmiting(false);
             let errorTypes = ["emailExist", "usernameExist", "serverError"];
             //remove previous errors
             setErrors((preVal) =>
@@ -97,6 +102,7 @@ function Signup() {
             });
           } else {
             //everything is ok
+            setDisplayLoadAfterSubmiting(false);
             setRegistrationStatus(true);
             //saved recieved details into local storage
             saveUserDetailsToLocalStorage(res.data, 3600000);
@@ -122,6 +128,10 @@ function Signup() {
           {registrationStatus ? (
             <div className="msg success">
               <span>Registration successful. Redirecting...</span>
+            </div>
+          ) : displayLoaderAfterSubmiting ? (
+            <div className={"msg loader"}>
+              <WaveLoading loadFor={"loading-for-auth"} />
             </div>
           ) : (
             <div
