@@ -5,7 +5,16 @@ import { BsClockHistory } from "react-icons/bs";
 import { TbCircleDashed } from "react-icons/tb";
 import { GrGroup } from "react-icons/gr";
 import { RiArchiveDrawerLine } from "react-icons/ri";
-function SidebarHeader() {
+function SidebarHeader({ setSearch, getAllUsers }) {
+  function handleOnchange(e) {
+    if (e.target.value !== "") {
+      getAllUsers(e.target.value);
+    }
+  }
+
+  function handleOnBlur(e) {
+    e.target.value = "";
+  }
   return (
     <div className="header">
       <div className="top">
@@ -16,7 +25,14 @@ function SidebarHeader() {
         </div>
       </div>
       <div className="middle">
-        <input type="text" placeholder="search" />
+        <input
+          type="text"
+          placeholder="search"
+          onClick={() => setSearch(true)}
+          onBlur={handleOnBlur}
+          name="searchTerm"
+          onChange={handleOnchange}
+        />
       </div>
       <div className="bottom">
         <BsClockHistory className="icon active-icon" />

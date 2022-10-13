@@ -25,9 +25,40 @@ function Home() {
   }, [navigate, userDetails]);
   const [windowSize, setWindowSize] = useState(getWindowSize());
   const [currentChat, setCurrentChat] = useState(null);
+  const [search, setSearch] = useState(false);
+  const [searchResults, setSearchResults] = useState(null);
+
+  const getAllUsers = async (searchTerm) => {
+    if (search) {
+      client
+        .get("/all-users", requestHeaderConfig(userDetails.token))
+        .then((res) => {
+          if ("err" in res.data) {
+            setUserDetails(null);
+          } else {
+            setSearchResults(
+              res.data.filter(
+                (item) =>
+                  item.username.toLowerCase().includes(searchTerm) &&
+                  item._id !== userDetails.userID
+              )
+            );
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  //search results are retained even after the user leaves the search bar
+  //so i'm clearing it
+  useEffect(() => {
+    if (!search) {
+      setSearchResults(null);
+    }
+  }, [search]);
 
   //set back to null, to do loading compontnt
-  const [friendsDetails, setFriendsDetails] = useState([]);
+  const [friendsDetails, setFriendsDetails] = useState(null);
   const [updateSideBar, setUpdateSideBar] = useState(false);
   const socket = useRef();
 
@@ -40,7 +71,6 @@ function Home() {
           requestHeaderConfig(userDetails.token)
         )
         .then((res) => {
-          setFriendsDetails(res.data);
           if ("error" in res.data || "tokenError" in res.data) {
             //access token is invalid or the userID param is invalid
             setUserDetails(null);
@@ -69,10 +99,23 @@ function Home() {
   window.addEventListener("beforeunload", handleTabClose);
 
   const handleChatClick = (id) => {
-    const whichChatWasClicked = friendsDetails.filter(
-      (item) => item._id === id
-    );
-    setCurrentChat(whichChatWasClicked[0]);
+    if (search) {
+      setSearch(false);
+      const searchResultThatWasClicked = searchResults.filter(
+        (item) => item._id === id
+      );
+      setCurrentChat(searchResultThatWasClicked[0]);
+
+      // setFriendsDetails((prevVal) => [
+      //   ...prevVal,
+      //   searchResultThatWasClicked[0],
+      // ]);
+    } else {
+      const whichChatWasClicked = friendsDetails.filter(
+        (item) => item._id === id
+      );
+      setCurrentChat(whichChatWasClicked[0]);
+    }
   };
 
   const closeChatArrow = () => {
@@ -104,13 +147,18 @@ function Home() {
               setUserDetails={setUserDetails}
               socket={socket}
               setUpdateSideBar={setUpdateSideBar}
+              setFriendsDetails={setFriendsDetails}
             />
           ) : (
             <Sidebar
-              friendsDetails={friendsDetails}
+              //returning either search results or users friends
+              friendsDetails={search ? searchResults : friendsDetails}
               userDetails={userDetails}
               setUserDetails={setUserDetails}
               handleChatClick={handleChatClick}
+              setSearch={setSearch}
+              getAllUsers={getAllUsers}
+              search={search}
             />
           )}
         </div>
@@ -120,10 +168,14 @@ function Home() {
       return (
         <div className="desktop-view">
           <Sidebar
-            friendsDetails={friendsDetails}
+            //returning either search results or users friends
+            friendsDetails={search ? searchResults : friendsDetails}
             userDetails={userDetails}
             setUserDetails={setUserDetails}
             handleChatClick={handleChatClick}
+            setSearch={setSearch}
+            getAllUsers={getAllUsers}
+            search={search}
           />
           {currentChat ? (
             <Chat
@@ -134,6 +186,7 @@ function Home() {
               setUserDetails={setUserDetails}
               socket={socket}
               setUpdateSideBar={setUpdateSideBar}
+              setFriendsDetails={setFriendsDetails}
             />
           ) : (
             ""

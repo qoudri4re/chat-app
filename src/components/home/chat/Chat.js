@@ -13,10 +13,11 @@ function Chat({
   setUserDetails,
   socket,
   setUpdateSideBar,
+  setFriendsDetails,
 }) {
   //maintain profile component display
   const [displayProfile, setDisplayProfile] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(null);
 
   //handles how the profile component is displayed or hidden
   const showOrCloseProfile = () => {
@@ -60,6 +61,7 @@ function Chat({
           messages={messages}
           setMessages={setMessages}
           setUpdateSideBar={setUpdateSideBar}
+          setFriendsDetails={setFriendsDetails}
         />
       </div>
       {displayProfile ? (

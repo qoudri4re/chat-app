@@ -8,15 +8,19 @@ function Sidebar({
   friendsDetails,
   userDetails,
   setUserDetails,
+  getAllUsers,
+  setSearch,
+  search,
 }) {
   return (
     <div className="sidebar">
-      <SidebarHeader />
+      <SidebarHeader getAllUsers={getAllUsers} setSearch={setSearch} />
       <ChatList
         handleChatClick={handleChatClick}
         friendsDetails={friendsDetails}
         userDetails={userDetails}
         setUserDetails={setUserDetails}
+        search={search}
       />
     </div>
   );

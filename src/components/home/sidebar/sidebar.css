@@ -46,6 +46,9 @@
   background-color: #a8c5e5;
   padding-left: 10px;
 }
+.sidebar .header input:focus {
+  outline: none;
+}
 .sidebar .header input::placeholder {
   color: #fff;
 }

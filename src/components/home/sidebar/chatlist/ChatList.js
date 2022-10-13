@@ -2,24 +2,34 @@ import React from "react";
 import ChatListItem from "./ChatListItem";
 import "./chatList.css";
 import EmptyChat from "../../../empty/EmptyChat";
+import EmptySearch from "../../../empty/EmptySearch";
+import WaveLoading from "../../../loaders/WaveLoading";
 
-function ChatList({ handleChatClick, friendsDetails }) {
-  if (friendsDetails.length === 0) {
-    return <EmptyChat />;
+function ChatList({ handleChatClick, friendsDetails, search }) {
+  if (friendsDetails) {
+    if (friendsDetails.length === 0 && !search) {
+      return <EmptyChat />;
+    } else if (friendsDetails.length === 0 && search) {
+      return <EmptySearch />;
+    } else {
+      let ChatListItems = friendsDetails.map((item) => {
+        return (
+          <ChatListItem
+            key={item._id}
+            id={item._id}
+            username={item.username}
+            lastMessage={"last message"}
+            unreadMessageCount={5}
+            handleChatClick={handleChatClick}
+          />
+        );
+      });
+      return <div className="chatlist">{ChatListItems}</div>;
+    }
+  } else if (!friendsDetails && search) {
+    return <div>type to search</div>;
   } else {
-    let ChatListItems = friendsDetails.map((item) => {
-      return (
-        <ChatListItem
-          key={item._id}
-          id={item._id}
-          username={item.username}
-          lastMessage={"last message"}
-          unreadMessageCount={5}
-          handleChatClick={handleChatClick}
-        />
-      );
-    });
-    return <div className="chatlist">{ChatListItems}</div>;
+    return <WaveLoading loadFor={"loading-for-chatList"} />;
   }
 }
 

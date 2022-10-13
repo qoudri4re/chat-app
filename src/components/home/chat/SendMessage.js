@@ -12,6 +12,7 @@ function SendMessage({
   socket,
   setMessages,
   setUpdateSideBar,
+  setFriendsDetails,
 }) {
   const [message, setMessage] = useState("");
 
@@ -37,7 +38,7 @@ function SendMessage({
               message,
               ...res.data,
             });
-
+            setFriendsDetails((prevVal) => [...prevVal, currentChat]);
             setMessages((prevValue) => [...prevValue, res.data]);
             setUpdateSideBar(true);
           }

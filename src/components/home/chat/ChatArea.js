@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { client, requestHeaderConfig } from "../../../utils/axios-request";
 import Message from "./Message";
+import WaveLoading from "../../loaders/WaveLoading";
+import EmptyChat from "../../empty/EmptyChat";
 
 function ChatArea({
   userDetails,
@@ -29,31 +31,47 @@ function ChatArea({
       .catch((error) => console.log(error));
   }, [currentChat, userDetails, setUserDetails, setMessages]);
 
-  return (
-    <div className="chat-area">
-      {messages.map((item) => {
-        if (item.senderID === userDetails.userID) {
-          return (
-            <Message
-              senderOrReciever={"sender"}
-              key={item._id}
-              message={item.message}
-              timeSent={item.time}
-            />
-          );
-        } else {
-          return (
-            <Message
-              senderOrReciever={"receiver"}
-              key={item._id}
-              message={item.message}
-              timeSent={item.createdAt}
-            />
-          );
-        }
-      })}
-    </div>
-  );
+  if (messages) {
+    if (messages.length > 0) {
+      return (
+        <div className="chat-area">
+          {messages.map((item) => {
+            if (item.senderID === userDetails.userID) {
+              return (
+                <Message
+                  senderOrReciever={"sender"}
+                  key={item._id}
+                  message={item.message}
+                  timeSent={item.time}
+                />
+              );
+            } else {
+              return (
+                <Message
+                  senderOrReciever={"receiver"}
+                  key={item._id}
+                  message={item.message}
+                  timeSent={item.createdAt}
+                />
+              );
+            }
+          })}
+        </div>
+      );
+    } else {
+      return (
+        <div className="chat-area">
+          <EmptyChat whereEmpty="chat-area" />
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="chat-area">
+        <WaveLoading loadFor="loading-for-chat-area" />
+      </div>
+    );
+  }
 }
 
 export default ChatArea;

@@ -24,3 +24,16 @@
   width: 50%;
   border: none;
 }
+.empty-chat-area span {
+  /* background-color: yellow; */
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+}
+.empty-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20%;
+}

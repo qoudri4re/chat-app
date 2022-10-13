@@ -85,9 +85,11 @@ a:link {
   gap: 5px;
   border-radius: 8px;
 }
+
 .form-container .error {
   border: 1px solid red;
 }
+
 .form-container .success {
   border: 1px solid green;
 }

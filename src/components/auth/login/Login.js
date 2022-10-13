@@ -7,6 +7,7 @@ import {
   setErrorAndFilter,
   saveUserDetailsToLocalStorage,
 } from "../utils/functions";
+import WaveLoading from "../../loaders/WaveLoading";
 
 function Login() {
   let navigate = useNavigate();
@@ -28,6 +29,8 @@ function Login() {
   });
   const [errors, setErrors] = useState([]);
   const [loginStatus, setLoginStatus] = useState(false);
+  const [displayLoaderAfterSubmiting, setDisplayLoadAfterSubmiting] =
+    useState(false);
 
   //handle onchange event
   const handleChange = (e) => {
@@ -40,6 +43,7 @@ function Login() {
     if (formDetails.username === "" || formDetails.password === "") {
       setErrorAndFilter("blank-field", "All fields must be filled!", setErrors);
     } else {
+      setDisplayLoadAfterSubmiting(true);
       //if the error exist already in the errors array, removing it.
       //preventing error messages from displaying even after the user has corrected
       // the error
@@ -53,10 +57,11 @@ function Login() {
         })
         .then((res) => {
           if ("error" in res.data) {
-            console.log(res.data.error);
             //invalid login details
+            setDisplayLoadAfterSubmiting(false);
             setErrorAndFilter("invalidDetails", res.data.error, setErrors);
           } else {
+            setDisplayLoadAfterSubmiting(false);
             //save recieved details into local storage
             saveUserDetailsToLocalStorage(res.data, 3600000);
             setLoginStatus(true);
@@ -81,6 +86,10 @@ function Login() {
           {loginStatus ? (
             <div className="msg success">
               <span>Login successful. Redirecting...</span>
+            </div>
+          ) : displayLoaderAfterSubmiting ? (
+            <div className={"msg loader"}>
+              <WaveLoading loadFor={"loading-for-auth"} />
             </div>
           ) : (
             <div
