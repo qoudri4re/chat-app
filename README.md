@@ -1,15 +1,23 @@
 ### CHAT APP
 
+A minimal fullstack chatapp created with the MERN stack.
+
+### features
+
+1. Login and signup functionality
+2. Sending and recieving messages.
+3. Search for registered users
+4. loading animations
+
+### Upcoming features
+
+1. Creating and joining groups
+2. file upload and downloads.
+3. view and create status
+4. delete sent messages
+5. archive chats
+6. unread messages count
+7. notifications
+8. settings tab
+
 [view live](https://react-project-chat-app.netlify.app/)
-
-#### test login details
-
-     user 1
-
-     username => admin
-     password => 12345678
-
-     user 2
-
-     username => admin2
-     password => 12345678
