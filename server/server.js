@@ -250,7 +250,7 @@ app.get("/users/all-users", verifyHeaderToken, async (req, res) => {
       res.send({ error: "Invalid request token" });
     } else {
       try {
-        const allUsers = await User.find();
+        const allUsers = await User.find({}, { password: 0, friendsId: 0 });
         res.send(allUsers);
       } catch (err) {
         console.log(err);
