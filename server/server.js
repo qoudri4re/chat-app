@@ -18,7 +18,7 @@ const jwt = require("jsonwebtoken");
 require("./database/connection");
 const User = require("./database/models/models").User;
 const Chat = require("./database/models/models").Chat;
-const { verifyHeaderToken } = require("./utils/functions");
+const { verifyHeaderToken, formatDateTime } = require("./utils/functions");
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 app.use(express.json());
@@ -211,6 +211,7 @@ app.post("/users/sendMessage", verifyHeaderToken, (req, res) => {
         message,
         users: [from, to],
         senderID: from,
+        timeSent: formatDateTime(new Date()),
       });
       newChat.save((err, newChatDoc) => {
         if (err) {

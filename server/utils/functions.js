@@ -17,4 +17,22 @@ function verifyHeaderToken(req, res, next) {
   }
 }
 
-module.exports = { verifyHeaderToken };
+function formatDateTime(dateTime) {
+  let amOrPm;
+  let hours;
+  let minutes =
+    dateTime.getMinutes() > 9
+      ? dateTime.getMinutes()
+      : `0${dateTime.getMinutes()}`;
+  if (dateTime.getHours() >= 12) {
+    amOrPm = "pm";
+    hours = dateTime.getHours() - 12;
+  } else {
+    amOrPm = "am";
+    hours = dateTime.getHours();
+  }
+
+  return `${hours}:${minutes} ${amOrPm}`;
+}
+
+module.exports = { verifyHeaderToken, formatDateTime };
