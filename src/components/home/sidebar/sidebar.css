@@ -37,7 +37,13 @@
 .sidebar .header .middle {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
+.sidebar .header .middle span {
+  cursor: pointer;
+}
+
 .sidebar .header input {
   width: 100%;
   height: 30px;

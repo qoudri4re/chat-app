@@ -30,22 +30,26 @@ function Home() {
 
   const getAllUsers = async (searchTerm) => {
     if (search) {
-      client
-        .get("/all-users", requestHeaderConfig(userDetails.token))
-        .then((res) => {
-          if ("err" in res.data) {
-            setUserDetails(null);
-          } else {
-            setSearchResults(
-              res.data.filter(
-                (item) =>
-                  item.username.toLowerCase().includes(searchTerm) &&
-                  item._id !== userDetails.userID
-              )
-            );
-          }
-        })
-        .catch((err) => console.log(err));
+      if (searchTerm === "") {
+        setSearchResults(null);
+      } else {
+        client
+          .get("/all-users", requestHeaderConfig(userDetails.token))
+          .then((res) => {
+            if ("err" in res.data) {
+              setUserDetails(null);
+            } else {
+              setSearchResults(
+                res.data.filter(
+                  (item) =>
+                    item.username.toLowerCase().includes(searchTerm) &&
+                    item._id !== userDetails.userID
+                )
+              );
+            }
+          })
+          .catch((err) => console.log(err));
+      }
     }
   };
 
@@ -105,11 +109,6 @@ function Home() {
         (item) => item._id === id
       );
       setCurrentChat(searchResultThatWasClicked[0]);
-
-      // setFriendsDetails((prevVal) => [
-      //   ...prevVal,
-      //   searchResultThatWasClicked[0],
-      // ]);
     } else {
       const whichChatWasClicked = friendsDetails.filter(
         (item) => item._id === id

@@ -14,7 +14,11 @@ function Sidebar({
 }) {
   return (
     <div className="sidebar">
-      <SidebarHeader getAllUsers={getAllUsers} setSearch={setSearch} />
+      <SidebarHeader
+        getAllUsers={getAllUsers}
+        setSearch={setSearch}
+        search={search}
+      />
       <ChatList
         handleChatClick={handleChatClick}
         friendsDetails={friendsDetails}

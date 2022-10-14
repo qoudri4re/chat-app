@@ -5,16 +5,24 @@ import { BsClockHistory } from "react-icons/bs";
 import { TbCircleDashed } from "react-icons/tb";
 import { GrGroup } from "react-icons/gr";
 import { RiArchiveDrawerLine } from "react-icons/ri";
-function SidebarHeader({ setSearch, getAllUsers }) {
+function SidebarHeader({ setSearch, getAllUsers, search }) {
   function handleOnchange(e) {
-    if (e.target.value !== "") {
-      getAllUsers(e.target.value);
-    }
+    getAllUsers(e.target.value);
+    // if (e.target.value !== "") {
+    //   getAllUsers(e.target.value);
+    // } else {
+    //   //set frienddetails back to null or modify the getAlluser function
+    // }
   }
 
   function handleOnBlur(e) {
     e.target.value = "";
   }
+  function closeSearch(e) {
+    e.target.value = "";
+    setSearch(false);
+  }
+
   return (
     <div className="header">
       <div className="top">
@@ -33,6 +41,7 @@ function SidebarHeader({ setSearch, getAllUsers }) {
           name="searchTerm"
           onChange={handleOnchange}
         />
+        {search && <span onClick={closeSearch}>close</span>}
       </div>
       <div className="bottom">
         <BsClockHistory className="icon active-icon" />

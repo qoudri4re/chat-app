@@ -27,7 +27,7 @@ function ChatList({ handleChatClick, friendsDetails, search }) {
       return <div className="chatlist">{ChatListItems}</div>;
     }
   } else if (!friendsDetails && search) {
-    return <div>type to search</div>;
+    return <div className="search-bar-msg">type any keyword to search</div>;
   } else {
     return <WaveLoading loadFor={"loading-for-chatList"} />;
   }

@@ -42,7 +42,7 @@ function ChatArea({
                   senderOrReciever={"sender"}
                   key={item._id}
                   message={item.message}
-                  timeSent={item.time}
+                  timeSent={item.timeSent}
                 />
               );
             } else {
@@ -51,7 +51,7 @@ function ChatArea({
                   senderOrReciever={"receiver"}
                   key={item._id}
                   message={item.message}
-                  timeSent={item.createdAt}
+                  timeSent={item.timeSent}
                 />
               );
             }

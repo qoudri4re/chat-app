@@ -62,6 +62,12 @@
 .hide-message-count {
   visibility: hidden;
 }
+.search-bar-msg {
+  height: 30%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
 
 @media (max-width: 1100px) {
   .chat-list-item .new-message-count {
