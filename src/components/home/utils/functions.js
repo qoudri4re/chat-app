@@ -26,4 +26,21 @@ function retrieveUserDetailsFromLocalStorage() {
   return userDetails;
 }
 
-export { retrieveUserDetailsFromLocalStorage, getWindowSize };
+/**
+ * saves user details {username, id, auth token} to local storage
+ * @param {*} userDetails -> the details to save
+ * @param {*} timeToLive -> expiry time
+ */
+function saveUserDetailsToLocalStorage(userDetails, timeToLive) {
+  const itemToSave = {
+    ...userDetails,
+    expiry: new Date().getTime() + timeToLive,
+  };
+  localStorage.setItem("userDetails", JSON.stringify(itemToSave));
+}
+
+export {
+  retrieveUserDetailsFromLocalStorage,
+  getWindowSize,
+  saveUserDetailsToLocalStorage,
+};

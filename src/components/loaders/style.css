@@ -12,6 +12,14 @@
   height: 30%;
   margin: auto 0;
 }
+.loading-for-update {
+  background-color: white;
+  border-radius: 10px;
+}
+.loading-for-update .wave {
+  height: 40%;
+  width: 2%;
+}
 .loading-for-chat-area .wave {
   width: 2%;
   height: 100%;
