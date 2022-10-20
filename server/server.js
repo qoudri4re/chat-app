@@ -261,8 +261,88 @@ app.get("/users/all-users", verifyHeaderToken, async (req, res) => {
   });
 });
 
-let onlineUsers = new Map();
+/**
+ * fetches users details
+ */
+app.get("/users/:userID", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ error: "invalid request token" });
+    } else {
+      try {
+        const user = await User.findOne({ _id: req.params.userID });
+        if (user) {
+          res.send(user);
+        } else {
+          //if this happens then a camel'll pass through the eye of a needle
+        }
+      } catch (err) {
+        res.send({ error: "something went wrong" });
+      }
+    }
+  });
+});
 
+app.post("/users/update-user", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ tokenError: "invalid rerquest token" });
+    } else {
+      const { username, email, password, userID } = req.body;
+      let existErrors = [];
+      if (username.changed) {
+        const usernameExist = await User.findOne({ username: username.value });
+        if (usernameExist) {
+          existErrors.push("username already exist");
+        }
+      }
+      if (email.changed) {
+        const emailExist = await User.findOne({ email: email.value });
+        if (emailExist) {
+          existErrors.push("email already exist");
+        }
+      }
+      if (existErrors.length > 0) {
+        res.send({ existErrors });
+      } else {
+        const user = await User.findOne({ _id: userID });
+        if (username.changed) {
+          user.username = username.value;
+        }
+        if (email.changed) {
+          user.email = email.value;
+        }
+        if (password.changed) {
+          user.password = password.value;
+        }
+        user.save((err, doc) => {
+          if (err) {
+            res.send({ serverError: "something went wrong" });
+          } else {
+            jwt.sign(
+              { username: doc.username },
+              jwtSecretKey,
+              { expiresIn: "1h" },
+              (err, token) => {
+                if (err) {
+                  res.send({ serverError: "something went wrong" });
+                } else {
+                  res.send({
+                    userID: doc._id,
+                    username: doc.username,
+                    token,
+                  });
+                }
+              }
+            );
+          }
+        });
+      }
+    }
+  });
+});
+
+let onlineUsers = new Map();
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userID) => {
