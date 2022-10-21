@@ -19,8 +19,9 @@ require("./database/connection");
 const User = require("./database/models/models").User;
 const Chat = require("./database/models/models").Chat;
 const { verifyHeaderToken, formatDateTime } = require("./utils/functions");
-
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
+const upload = require("./utils/multer");
+const cloudinary = require("./utils/cloudinary");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -31,6 +32,29 @@ app.use(
     ],
   })
 );
+
+/**
+ * endpoint for uploading images
+ */
+app.post("/users/upload", upload.single("image"), async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      // eager: [{ width: 147, height: 147, crop: "crop" }],
+      aspect_ratio: "2.0",
+      crop: "crop",
+    });
+
+    const user = await User.findOne({ _id: req.body.userID });
+    user.profile_img = result.secure_url;
+    user.profile_image_cloudinary_id = result.public_id;
+
+    user.save();
+    res.send({ upadated: "details updated" });
+  } catch (err) {
+    res.send({ error: "something went wrong" });
+    console.log(err);
+  }
+});
 
 /**
  * the sign up endpoint
@@ -267,7 +291,7 @@ app.get("/users/all-users", verifyHeaderToken, async (req, res) => {
 app.get("/users/:userID", verifyHeaderToken, (req, res) => {
   jwt.verify(req.token, jwtSecretKey, async (err) => {
     if (err) {
-      res.send({ error: "invalid request token" });
+      res.send({ tokenError: "invalid request token" });
     } else {
       try {
         const user = await User.findOne({ _id: req.params.userID });

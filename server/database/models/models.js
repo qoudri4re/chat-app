@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   friendsId: [{ type: String }],
+  profile_img: { type: String, default: "default-image" },
+  profile_image_cloudinary_id: String,
 });
 
 const chatSchema = new mongoose.Schema(
