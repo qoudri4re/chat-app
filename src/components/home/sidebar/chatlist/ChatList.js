@@ -21,6 +21,7 @@ function ChatList({ handleChatClick, friendsDetails, search }) {
             lastMessage={"last message"}
             unreadMessageCount={5}
             handleChatClick={handleChatClick}
+            profile_img={item.profile_img}
           />
         );
       });

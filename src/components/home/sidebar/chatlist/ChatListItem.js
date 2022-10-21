@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import default_image from "./default-image.jpg";
 
 function ChatList({
@@ -7,12 +7,33 @@ function ChatList({
   lastMessage,
   unreadMessageCount,
   handleChatClick,
+  profile_img,
 }) {
+  const [profileImgLoaded, setProfileImgLoaded] = useState(false);
   return (
     <div className="chat-list-item" onClick={() => handleChatClick(id)}>
       <div className="left">
         <div className="image-online-status">
-          <img src={default_image} alt="" />
+          {profile_img !== "default-image" ? (
+            <img
+              src={profile_img}
+              alt=""
+              onLoad={() => setProfileImgLoaded(true)}
+              className="hidden-image"
+            />
+          ) : (
+            ""
+          )}
+          <img
+            src={
+              profile_img === "default-image"
+                ? default_image
+                : profileImgLoaded
+                ? profile_img
+                : default_image
+            }
+            alt=""
+          />
         </div>
         <div className="chat-details">
           <h3>{username}</h3>

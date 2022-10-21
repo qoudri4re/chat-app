@@ -149,10 +149,24 @@
   align-items: center;
   justify-content: center;
   left: 8%;
+  text-align: center;
 }
 .settings .loader {
   display: block;
   height: 10%;
+}
+.sidebar .loading-wave {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.settings .upload-image input {
+  display: none;
+}
+.hidden-image {
+  display: none;
 }
 @media (min-width: 700px) and (max-width: 1000px) {
   .header .bottom .icon {

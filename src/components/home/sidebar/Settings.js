@@ -6,7 +6,9 @@ import { client, requestHeaderConfig } from "../../../utils/axios-request";
 import { v4 as uuidv4 } from "uuid";
 import WaveLoading from "../../loaders/WaveLoading";
 import { saveUserDetailsToLocalStorage } from "../../auth/utils/functions";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 
+//TODO display loader before api
 function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
   const [userInfo, setUserInfo] = useState(null);
   const [newDetails, setNewDetails] = useState({
@@ -18,6 +20,9 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
   const [errors, setErrors] = useState([]);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [displayLoader, setDisplayLoader] = useState(false);
+  const [showUploadButton, setShowUploadButton] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const fetchUserDetails = () => {
@@ -25,6 +30,8 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
         .get(`/${userDetails.userID}`, requestHeaderConfig(userDetails.token))
         .then((res) => {
           if ("error" in res) {
+            setUserDetails(null);
+          } else if ("tokenError" in res.data) {
             setUserDetails(null);
           } else {
             setUserInfo(res.data);
@@ -70,7 +77,6 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
       .then((res) => {
         if ("tokenError" in res.data) {
           setDisplayLoader(false);
-          setUserDetails(null);
         } else if ("existErrors" in res.data) {
           setDisplayLoader(false);
           setErrors([...res.data.existErrors]);
@@ -128,6 +134,55 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
       setButtonDisabled(true);
     }
   }
+  function clickFileUploadInput() {
+    document.getElementById("upload").click();
+  }
+  function fileOnchange(e) {
+    if (e.target.length !== 0) {
+      const split_filename = e.target.files[0].name.split(".");
+      const extension = split_filename[split_filename.length - 1];
+      if (extension !== "jpg" && extension !== "png" && extension !== "jpeg") {
+        e.target.value = "";
+        setErrors(["please upload an image file"]);
+      } else {
+        setShowUploadButton(true);
+        setUploadedImage(e.target.files[0]);
+        document.getElementById("image").style.width = "147px";
+        document.getElementById("image").style.height = "147px";
+      }
+    }
+  }
+  function upload() {
+    setDisplayLoader(true);
+    client
+      .post(
+        "/upload",
+        { image: uploadedImage, userID: userDetails.userID },
+        {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        if ("error" in res.data) {
+          setDisplayLoader(false);
+          setUpdateStatus(false);
+          setErrors(["something went wrong please try again"]);
+        } else if ("tokenError" in res.data) {
+          setDisplayLoader(false);
+          setUserDetails(null);
+        } else {
+          setDisplayLoader(false);
+          setUpdateStatus(true);
+          setShowUploadButton(false);
+        }
+      })
+      .catch((err) => {
+        setDisplayLoader(false);
+        setErrors("something went wrong, please try again");
+      });
+  }
   if (userInfo) {
     return (
       <div className="settings">
@@ -151,8 +206,48 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
           <GrClose onClick={showOrCloseSettings} className="icon" />
         </div>
         <div className="upload-image">
-          <img src={image} alt="" />
-          <BiCamera className="icon" />
+          {!uploadedImage ? (
+            userInfo.profile_img !== "default-image" ? (
+              <img
+                src={userInfo.profile_img}
+                alt=""
+                onLoad={() => setImageLoaded(true)}
+                className="hidden-image"
+              />
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
+          <img
+            src={
+              uploadedImage
+                ? URL.createObjectURL(uploadedImage)
+                : userInfo.profile_img !== "default-image"
+                ? imageLoaded
+                  ? userInfo.profile_img
+                  : image
+                : image
+            }
+            alt=""
+            id="image"
+            width="147"
+            height="147"
+          />
+          <form>
+            <input
+              type="file"
+              id="upload"
+              name="image"
+              onChange={fileOnchange}
+            />
+          </form>
+          {showUploadButton ? (
+            <AiOutlineCloudUpload className="icon" onClick={upload} />
+          ) : (
+            <BiCamera className="icon" onClick={clickFileUploadInput} />
+          )}
         </div>
         <div className="form-row">
           <p>Username</p>
@@ -184,6 +279,12 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
         <button disabled={buttonDisabled} onClick={update}>
           save changes
         </button>
+      </div>
+    );
+  } else {
+    return (
+      <div className="loading-wave">
+        <WaveLoading loadFor={"loading-for-settings"} />
       </div>
     );
   }
