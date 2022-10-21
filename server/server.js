@@ -43,11 +43,9 @@ app.post("/users/upload", upload.single("image"), async (req, res) => {
       aspect_ratio: "2.0",
       crop: "crop",
     });
-
     const user = await User.findOne({ _id: req.body.userID });
     user.profile_img = result.secure_url;
     user.profile_image_cloudinary_id = result.public_id;
-
     user.save();
     res.send({ upadated: "details updated" });
   } catch (err) {
