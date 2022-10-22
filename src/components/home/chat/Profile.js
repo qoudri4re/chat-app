@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import default_image from "../sidebar/chatlist/default-image.jpg";
 import { GrClose } from "react-icons/gr";
 import { IoMdNotifications } from "react-icons/io";
@@ -6,13 +6,35 @@ import { BiUser } from "react-icons/bi";
 import { MdCall } from "react-icons/md";
 
 function Profile({ showOrCloseProfile, currentChat }) {
+  const [profileImageLoaded, setProfileImageLoaded] = useState(false);
+
   return (
     <div className="profile">
       <div className="profile-item head">
         <GrClose className="close-icon icon" onClick={showOrCloseProfile} />
       </div>
       <div className="profile-item picture">
-        <img src={default_image} alt="" />
+        {currentChat.profile_img !== "default-image" ? (
+          <img
+            src={currentChat.profile_img}
+            alt=""
+            onLoad={() => setProfileImageLoaded(true)}
+            className="hidden-image"
+          />
+        ) : (
+          ""
+        )}
+        <img
+          src={
+            currentChat.profile_img === "default-image"
+              ? default_image
+              : profileImageLoaded
+              ? currentChat.profile_img
+              : default_image
+          }
+          alt=""
+          onClick={showOrCloseProfile}
+        />
         <div className="details">
           <h3>{currentChat.username}</h3>
           <span>online</span>

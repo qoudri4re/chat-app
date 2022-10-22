@@ -9,6 +9,7 @@ function ChatHeader({
   windowSize,
   currentChat,
 }) {
+  console.log(windowSize);
   return (
     <div className="chat-header">
       <div className="left">
