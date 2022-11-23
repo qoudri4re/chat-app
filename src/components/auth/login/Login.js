@@ -119,8 +119,7 @@ function Login() {
             />
             <button disabled={loginStatus}>LOGIN</button>
             <span>
-              Don't have an account?
-              <Link to="/signup"> SIGNUP</Link>
+              Don't have an account? <Link to="/signup"> SIGNUP</Link>
             </span>
           </form>
         </div>

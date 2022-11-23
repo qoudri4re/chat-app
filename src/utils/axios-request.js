@@ -8,7 +8,7 @@ let baseURL;
 if (process.env.REACT_APP_ENVIRONMENT === "development") {
   baseURL = "http://localhost:3001/users";
 } else {
-  baseURL = "https://chat-app-api.up.railway.app/users";
+  baseURL = "https://chat-app-api-ogbx.onrender.com/users";
 }
 
 const client = axios.create({
