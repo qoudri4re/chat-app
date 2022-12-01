@@ -132,8 +132,7 @@ app.post("/users/signup", async (req, res) => {
 });
 
 /**
- * the login endpoint
- * recieves - username - password
+ * the login endpoint * recieves - username - password
  *
  */
 
