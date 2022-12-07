@@ -8,6 +8,7 @@ A minimal fullstack chatapp created with the MERN stack.
 2. Sending and recieving messages.
 3. Search for registered users
 4. loading animations
+5. Settings tab
 
 ### Upcoming features
 
@@ -18,6 +19,5 @@ A minimal fullstack chatapp created with the MERN stack.
 5. archive chats
 6. unread messages count
 7. notifications
-8. settings tab
 
 [view live](https://react-project-chat-app.netlify.app/)
