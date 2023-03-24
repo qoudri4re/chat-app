@@ -9,14 +9,18 @@ function ChatHeader({
   windowSize,
   currentChat,
 }) {
-  console.log(windowSize);
   return (
     <div className="chat-header">
       <div className="left">
+        {windowSize.innerWidth < 700 ? (
+          <BsArrowLeftShort
+            className="icon"
+            onClick={() => closeChatArrow(currentChat._id)}
+          />
+        ) : (
+          ""
+        )}
         <div className="image-online-status">
-          {windowSize.innerWidth < 700 && (
-            <BsArrowLeftShort className="icon" onClick={closeChatArrow} />
-          )}
           <img src={default_image} alt="" onClick={showOrCloseProfile} />
         </div>
         <div className="username-status" onClick={showOrCloseProfile}>

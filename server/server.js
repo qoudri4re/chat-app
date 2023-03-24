@@ -18,9 +18,12 @@ const jwt = require("jsonwebtoken");
 require("./database/connection");
 const User = require("./database/models/models").User;
 const Chat = require("./database/models/models").Chat;
+const Group = require("./database/models/models").Group;
 const { verifyHeaderToken, formatDateTime } = require("./utils/functions");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 const upload = require("./utils/multer");
+const uploadMultipleFiles = require("./utils/multerMultipleFiles");
+
 const cloudinary = require("./utils/cloudinary");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,7 +37,7 @@ app.use(
 );
 
 /**
- * endpoint for uploading images
+ * endpoint for uploading profile images
  */
 app.post("/users/upload", upload.single("image"), async (req, res) => {
   try {
@@ -53,6 +56,87 @@ app.post("/users/upload", upload.single("image"), async (req, res) => {
     console.log(err);
   }
 });
+
+async function uploadFileToCloudinary(file) {
+  const options = { resource_type: "auto" };
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(file.path, options, (error, result) => {
+      if (error) {
+        reject(
+          `The file ${file.originalname} could not be uploaded, please try again`
+        );
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
+app.post(
+  "/users/uploadMultipleFiles",
+  uploadMultipleFiles,
+  async (req, res) => {
+    const { to, from } = req.body;
+
+    const sender = await User.findOne({ _id: from });
+    const reciever = await User.findOne({ _id: to });
+
+    if (sender.friendsId.indexOf(reciever._id) === -1) {
+      sender.friendsId = [...sender.friendsId, to];
+      sender.save();
+    }
+    if (reciever.friendsId.indexOf(sender._id) === -1) {
+      reciever.friendsId = [...reciever.friendsId, from];
+      reciever.save();
+    }
+
+    let errors = [];
+    let uploadedFiles = [];
+    for (let i = 0; i < req.files.length; i++) {
+      let file = req.files[i];
+      try {
+        const result = await uploadFileToCloudinary(file);
+        let messageType;
+        if (result.resource_type === "image") {
+          messageType = "image";
+        } else if (result.resource_type === "video") {
+          if (result.is_audio) {
+            messageType = "audio";
+          } else {
+            messageType = "video";
+          }
+        } else {
+          messageType = "raw";
+        }
+        try {
+          const newChat = new Chat({
+            users: [from, to],
+            senderID: from,
+            timeSent: formatDateTime(new Date()),
+            messageType,
+            messageUrl: result.secure_url,
+            messageCloudinaryId: result.public_id,
+            messageExtension: result.format,
+            messageName: file.originalname,
+          });
+
+          const newChatDoc = await new Promise((resolve, reject) => {
+            newChat.save((err, doc) => {
+              if (err) reject(err);
+              else resolve(doc);
+            });
+          });
+          uploadedFiles.push(newChatDoc);
+        } catch (error) {
+          errors.push(error);
+        }
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    res.send({ uploadedFiles, errors });
+  }
+);
 
 /**
  * the sign up endpoint
@@ -266,10 +350,57 @@ app.post("/users/getMessages", verifyHeaderToken, async (req, res) => {
   });
 });
 
+app.get("/users/deleteMessage/:messageId", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ tokenError: "invalid or expired token" });
+    } else {
+      try {
+        const updatedDoc = await Chat.findOneAndUpdate(
+          { _id: req.params.messageId },
+          { message: null, deleted: true },
+          { new: true }
+        );
+        if (!updatedDoc) {
+          res.send({ notFound: "document not found" });
+        } else {
+          res.send({ success: true, updatedDoc });
+        }
+      } catch (error) {
+        res.send({ error: "something went wrong please try again" });
+      }
+    }
+  });
+});
+
+app.put("/users/editMessage/:messageId", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ tokenError: "invalid or expired token" });
+    } else {
+      const { message } = req.body;
+      try {
+        const updatedMessageDoc = await Chat.findByIdAndUpdate(
+          { _id: req.params.messageId },
+          { message, edited: true },
+          { new: true }
+        );
+        if (!updatedMessageDoc) {
+          res.send({ notFound: "document not found" });
+        } else {
+          res.send({ messageEdited: true, updatedMessageDoc });
+        }
+      } catch (error) {
+        res.send({ error: "something went wrong please try again" });
+      }
+    }
+  });
+});
+
 app.get("/users/all-users", verifyHeaderToken, async (req, res) => {
   jwt.verify(req.token, jwtSecretKey, async (err) => {
     if (err) {
-      res.send({ error: "Invalid request token" });
+      res.send({ tokenError: "Invalid request token" });
     } else {
       try {
         const allUsers = await User.find({}, { password: 0, friendsId: 0 });
@@ -300,6 +431,50 @@ app.get("/users/:userID", verifyHeaderToken, (req, res) => {
       } catch (err) {
         res.send({ error: "something went wrong" });
       }
+    }
+  });
+});
+
+app.post("/users/createGroup", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ tokenError: "Invalid request token" });
+    } else {
+      const { adminId, groupName, participantsId } = req.body;
+      const newGroup = new Group({
+        groupName,
+        participantsId,
+        adminsId: adminId,
+      });
+      newGroup.save((err, doc) => {
+        if (err) {
+          res.send({ serverError: "Something went wrong, please try again" });
+        } else {
+          res.send(doc);
+        }
+      });
+    }
+  });
+});
+
+app.get("/users/:userId/groups", verifyHeaderToken, (req, res) => {
+  jwt.verify(req.token, jwtSecretKey, async (err) => {
+    if (err) {
+      res.send({ tokenError: "Invalid request token" });
+    } else {
+      const userId = req.params.userId;
+      Group.find({ participantsId: userId })
+        .populate({ path: "participantsId", select: "-password" })
+        .exec((err, groups) => {
+          if (err) {
+            res.send({
+              serverError:
+                "Something went wrong at the server, please try again",
+            });
+          } else {
+            res.send({ groups });
+          }
+        });
     }
   });
 });
@@ -374,6 +549,27 @@ io.on("connection", (socket) => {
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("recieve-message", data);
     }
+  });
+  socket.on("delete-message", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("recieve-deleted-message", data);
+    }
+  });
+  socket.on("messageEdited", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("recieveEditedMessage", data);
+    }
+  });
+  socket.on("sendFileMessage", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("recieveFileMessage", data);
+    }
+  });
+  socket.on("exit", (data) => {
+    onlineUsers.delete(data);
   });
 });
 

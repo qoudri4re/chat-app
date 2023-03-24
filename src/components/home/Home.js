@@ -4,7 +4,9 @@ import Chat from "./chat/Chat";
 import "./home.css";
 import {
   getWindowSize,
+  retrieveMessageCountFromLocalStorage,
   retrieveUserDetailsFromLocalStorage,
+  saveMessageCountToLocalStorage,
 } from "./utils/functions";
 import { useNavigate } from "react-router-dom";
 import { client, requestHeaderConfig } from "../../utils/axios-request";
@@ -17,27 +19,37 @@ function Home() {
   const [userDetails, setUserDetails] = useState(
     retrieveUserDetailsFromLocalStorage()
   );
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(
+    retrieveMessageCountFromLocalStorage()
+  );
 
   useEffect(() => {
     if (!userDetails) {
       navigate("/login");
     }
   }, [navigate, userDetails]);
+  useEffect(() => {
+    saveMessageCountToLocalStorage(unreadMessagesCount);
+  }, [unreadMessagesCount]);
+
   const [windowSize, setWindowSize] = useState(getWindowSize());
   const [currentChat, setCurrentChat] = useState(null);
   const [search, setSearch] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
+  const [messagesUpdates, setMessagesUpdate] = useState({ updated: false });
 
-  const getAllUsers = async (searchTerm) => {
-    if (search) {
+  const getAllUsers = async (searchTerm, where = null) => {
+    if (search || where === "group") {
       if (searchTerm === "") {
         setSearchResults(null);
       } else {
         client
           .get("/all-users", requestHeaderConfig(userDetails.token))
           .then((res) => {
-            if ("err" in res.data) {
+            if ("tokenError" in res.data) {
               setUserDetails(null);
+            } else if ("error" in res.data) {
+              //modal
             } else {
               setSearchResults(
                 res.data.filter(
@@ -96,11 +108,41 @@ function Home() {
     }
   }, [userDetails]);
 
-  const handleTabClose = (event) => {
-    socket.current.emit("close", userDetails.userID);
-  };
-
-  window.addEventListener("beforeunload", handleTabClose);
+  useEffect(() => {
+    if (socket.current && !currentChat) {
+      socket.current.on("recieve-message", (data) => {
+        setUnreadMessagesCount((prevValue) => {
+          const isAlreadyExist = prevValue.some(
+            (item) => item.messageId === data._id
+          );
+          if (!isAlreadyExist) {
+            return [
+              ...prevValue,
+              { friendChatId: data.from, messageId: data._id },
+            ];
+          }
+          return prevValue;
+        });
+      });
+      socket.current.on("recieveFileMessage", (data) => {
+        setUnreadMessagesCount((prevValue) => {
+          const isAlreadyExist = prevValue.some(
+            (item) => item.messageId === data._id
+          );
+          if (!isAlreadyExist) {
+            return [
+              ...prevValue,
+              {
+                friendChatId: data.from,
+                messageId: data.uniqueId,
+              },
+            ];
+          }
+          return prevValue;
+        });
+      });
+    }
+  }, [socket]);
 
   const handleChatClick = (id) => {
     if (search) {
@@ -115,9 +157,25 @@ function Home() {
       );
       setCurrentChat(whichChatWasClicked[0]);
     }
+    setUnreadMessagesCount((prevValue) =>
+      prevValue.filter((item) => item.friendChatId !== id)
+    );
   };
 
-  const closeChatArrow = () => {
+  useEffect(() => {
+    if (currentChat) {
+      setUnreadMessagesCount((prevValue) =>
+        prevValue.filter((item) => item.friendChatId !== currentChat._id)
+      );
+    }
+  }, [currentChat]);
+
+  const closeChatArrow = (currentChatId) => {
+    if (currentChat) {
+      setUnreadMessagesCount((prevValue) =>
+        prevValue.filter((item) => item.friendChatId !== currentChatId)
+      );
+    }
     setCurrentChat(null);
   };
 
@@ -131,7 +189,6 @@ function Home() {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
-
   if (userDetails) {
     //display for mobile
     if (windowSize.innerWidth < 700) {
@@ -147,6 +204,10 @@ function Home() {
               socket={socket}
               setUpdateSideBar={setUpdateSideBar}
               setFriendsDetails={setFriendsDetails}
+              setUnreadMessagesCount={setUnreadMessagesCount}
+              view={"mobile"}
+              messagesUpdates={messagesUpdates}
+              setMessagesUpdate={setMessagesUpdate}
             />
           ) : (
             <Sidebar
@@ -158,6 +219,9 @@ function Home() {
               setSearch={setSearch}
               getAllUsers={getAllUsers}
               search={search}
+              unreadMessagesCount={unreadMessagesCount}
+              setUnreadMessagesCount={setUnreadMessagesCount}
+              searchResults={searchResults}
             />
           )}
         </div>
@@ -175,6 +239,9 @@ function Home() {
             setSearch={setSearch}
             getAllUsers={getAllUsers}
             search={search}
+            unreadMessagesCount={unreadMessagesCount}
+            setUnreadMessagesCount={setUnreadMessagesCount}
+            searchResults={searchResults}
           />
           {currentChat ? (
             <Chat
@@ -186,6 +253,10 @@ function Home() {
               socket={socket}
               setUpdateSideBar={setUpdateSideBar}
               setFriendsDetails={setFriendsDetails}
+              setUnreadMessagesCount={setUnreadMessagesCount}
+              view={"desktop"}
+              messagesUpdates={messagesUpdates}
+              setMessagesUpdate={setMessagesUpdate}
             />
           ) : (
             ""

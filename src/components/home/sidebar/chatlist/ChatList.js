@@ -5,7 +5,12 @@ import EmptyChat from "../../../empty/EmptyChat";
 import EmptySearch from "../../../empty/EmptySearch";
 import WaveLoading from "../../../loaders/WaveLoading";
 
-function ChatList({ handleChatClick, friendsDetails, search }) {
+function ChatList({
+  handleChatClick,
+  friendsDetails,
+  search,
+  unreadMessagesCount,
+}) {
   if (friendsDetails) {
     if (friendsDetails.length === 0 && !search) {
       return <EmptyChat />;
@@ -13,13 +18,17 @@ function ChatList({ handleChatClick, friendsDetails, search }) {
       return <EmptySearch />;
     } else {
       let ChatListItems = friendsDetails.map((item) => {
+        let unreadMessages = unreadMessagesCount.filter(
+          (message) => message.friendChatId === item._id
+        ).length;
+
         return (
           <ChatListItem
             key={item._id}
             id={item._id}
             username={item.username}
             lastMessage={"last message"}
-            unreadMessageCount={5}
+            unreadMessageCount={unreadMessages}
             handleChatClick={handleChatClick}
             profile_img={item.profile_img}
           />

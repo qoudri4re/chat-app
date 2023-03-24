@@ -1,10 +1,12 @@
 .sidebar {
-  background-color: #0079fe;
+  background-color: #393053;
+  /* background-color: #474e68; */
   padding: 10px 0;
-  color: #fff;
+  color: #d9d9d9;
   padding: 10px;
   overflow-y: scroll;
   height: 100vh;
+  overflow: auto;
 }
 .sidebar .header {
   display: flex;
@@ -27,8 +29,9 @@
   display: flex;
   align-items: center;
   width: 20%;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+  /* background-color: red; */
 }
 .sidebar .header .bottom {
   display: flex;
@@ -167,6 +170,190 @@
 }
 .hidden-image {
   display: none;
+}
+.create__group {
+  height: 100%;
+  position: relative;
+}
+.create__group .add__members {
+  height: fit-content;
+  max-height: 65%;
+  margin-top: 10px;
+}
+.create__group .group__details {
+  display: flex;
+  height: 10%;
+  gap: 15px;
+  padding-left: 15px;
+}
+.add__members .search {
+  height: 2rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  align-items: center;
+}
+.add__members .searching input {
+  width: 88%;
+}
+.add__members .search input {
+  height: 100%;
+  outline: none;
+  background-color: #a8c5e5;
+  border: none;
+  padding-left: 5px;
+  color: #fff;
+}
+.add__members .search input::placeholder {
+  color: #fff;
+}
+.create__group .group__details .group__name input::placeholder {
+  color: #fff;
+}
+.create__group .group__details .group__name {
+  width: 75%;
+  display: flex;
+  align-items: flex-end;
+}
+.create__group .group__details .group__name input {
+  height: 50%;
+  outline: none;
+  border: none;
+  width: 100%;
+  background-color: #a8c5e5;
+  padding-left: 5px;
+  color: #fff;
+}
+.create__group .group__details .add__image__icon {
+  width: 18%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 50%;
+  position: relative;
+}
+.create__group .group__details .add__image__icon .overlay__icon {
+  color: #4caf50;
+  cursor: pointer;
+  position: absolute;
+  font-size: 2rem;
+  bottom: 0;
+  right: 0;
+}
+.create__group .group__details .add__image__icon img {
+  height: 100%;
+  width: 100%;
+}
+.create__group .create__group__header {
+  display: flex;
+  height: 10%;
+}
+.sidebar__create__group {
+  padding: 0;
+}
+.create__group__header .header__text {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.create__group__header .close__icon {
+  width: 10%;
+  display: flex;
+  justify-content: center;
+}
+.create__group__header .close__icon .icon {
+  margin-top: 12px;
+  color: #d9d9d9;
+  font-size: 1.2rem;
+}
+.create__group .potential__members {
+  margin-top: 10px;
+  height: fit-content;
+  max-height: 24.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+}
+.create__group .potential__members .potential__member {
+  display: flex;
+  height: 4rem;
+}
+.create__group .create__or__cancel {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 5%;
+  justify-content: flex-end;
+  padding-right: 10px;
+  margin-top: 5px;
+}
+.create__group .create__or__cancel .cancel {
+  cursor: pointer;
+}
+.create__group .create__or__cancel .create {
+  height: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  background-color: #4caf50;
+  cursor: pointer;
+}
+.create__group .potential__members .potential__member .left {
+  background-color: #50577a;
+  display: flex;
+  width: 90%;
+  align-items: center;
+  gap: 10px;
+  padding-left: 5px;
+}
+.create__group .potential__members .potential__member .right {
+  width: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4caf50;
+  cursor: pointer;
+}
+.potential__members .potential__member .left .image__background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  height: 70%;
+}
+.potential__members .potential__member .left .image__background img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.groups {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.create__group .create__group__error__modal {
+  background-color: red;
+  position: absolute;
+  width: 90%;
+  min-height: 10%;
+  height: fit-content;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  top: 8%;
+  right: 5%;
+  z-index: 999999;
+  gap: 0.4rem;
+}
+.create__group .create__group__error__modal .cancel {
+  cursor: pointer;
+  align-self: flex-end;
 }
 @media (min-width: 700px) and (max-width: 1000px) {
   .header .bottom .icon {

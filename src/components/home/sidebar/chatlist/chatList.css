@@ -9,7 +9,7 @@
   align-items: center;
   height: 70px;
   gap: 10px;
-  background-color: #41699f;
+  background-color: #50577a;
   justify-content: center;
   cursor: pointer;
 }
@@ -29,8 +29,8 @@
   width: 100%;
 }
 .chat-list-item .new-message-count {
-  background-color: #fff;
-  color: #0079fe;
+  background-color: #4f3b78;
+  color: #fff;
   border-radius: 50%;
   width: 6%;
   height: 30%;

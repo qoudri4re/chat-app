@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 function getWindowSize() {
   const { innerWidth, innerHeight } = window;
   return { innerWidth, innerHeight };
@@ -39,8 +40,27 @@ function saveUserDetailsToLocalStorage(userDetails, timeToLive) {
   localStorage.setItem("userDetails", JSON.stringify(itemToSave));
 }
 
+function saveMessageCountToLocalStorage(messageCount) {
+  localStorage.setItem("messageCount", JSON.stringify(messageCount));
+}
+
+function retrieveMessageCountFromLocalStorage() {
+  const messageCount = localStorage.getItem("messageCount");
+  if (messageCount) {
+    return JSON.parse(messageCount);
+  }
+  return [];
+}
+
+function generateUniqueId() {
+  return uuidv4();
+}
+
 export {
   retrieveUserDetailsFromLocalStorage,
   getWindowSize,
   saveUserDetailsToLocalStorage,
+  generateUniqueId,
+  saveMessageCountToLocalStorage,
+  retrieveMessageCountFromLocalStorage,
 };

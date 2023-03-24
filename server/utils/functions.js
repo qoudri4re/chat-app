@@ -35,4 +35,33 @@ function formatDateTime(dateTime) {
   return `${hours}:${minutes} ${amOrPm}`;
 }
 
-module.exports = { verifyHeaderToken, formatDateTime };
+const supportedFileFormats = {
+  audio: [
+    "mp3",
+    "wav",
+    "flac",
+    "aac",
+    "ogg",
+    "wma",
+    "m4a",
+    "aiff",
+    "au",
+    "amr",
+  ],
+  image: ["jpg", "png", "jpeg"],
+  video: [
+    "mp4",
+    "avi",
+    "wmv",
+    "mov",
+    "flv",
+    "mkv",
+    "mpg",
+    "webm",
+    "rmvb",
+    "m4v",
+  ],
+  document: ["docx", "pdf"],
+};
+
+module.exports = { verifyHeaderToken, formatDateTime, supportedFileFormats };

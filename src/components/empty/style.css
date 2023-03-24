@@ -25,7 +25,7 @@
   border: none;
 }
 .empty-chat-area span {
-  /* background-color: yellow; */
+  color: #fff;
   width: 50%;
   height: 50%;
   display: flex;

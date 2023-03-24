@@ -3,6 +3,7 @@
   grid-template-columns: 0.7fr 2fr;
   grid-template-rows: 100vh;
   overflow: hidden;
+  background-color: #18122b;
 }
 
 @media (min-width: 700px) and (max-width: 1000px) {

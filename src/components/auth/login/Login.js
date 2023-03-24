@@ -75,11 +75,10 @@ function Login() {
     return (
       <div className="login form-container">
         <div className="left">
-          <h2>Lorem ipsum cit elo dolorrum emosito amet</h2>
+          <h2>Welcome to Chat App!</h2>
           <p>
-            Lorem ipsum elor cit doremk ji plocato jdu rty tyi mono gro proco to
-            blo mo crudito duid, see how oyhej dyf yryrr rfr yyry ryryr yryg
-            gjghg hfhfh fyfyfy fhyfyf
+            Login or sign up to start chatting with your friends, family, and
+            colleagues. Stay connected and never miss a conversation. Join now!
           </p>
         </div>
         <div className="right">
