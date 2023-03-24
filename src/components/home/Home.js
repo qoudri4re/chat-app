@@ -102,8 +102,14 @@ function Home() {
   }, [userDetails, setUserDetails, updateSideBar]);
 
   useEffect(() => {
+    let baseURL;
+    if (process.env.REACT_APP_ENVIRONMENT === "development") {
+      baseURL = "http://localhost:3001";
+    } else {
+      baseURL = "https://chat-app-api-ogbx.onrender.com";
+    }
     if (userDetails) {
-      socket.current = io("http://localhost:3001");
+      socket.current = io(baseURL);
       socket.current.emit("add-user", userDetails.userID);
     }
   }, [userDetails]);
