@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../auth.css";
+import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { client } from "../../../utils/axios-request";
 import {
@@ -7,7 +8,10 @@ import {
   setErrorAndFilter,
   saveUserDetailsToLocalStorage,
 } from "../utils/functions";
-import WaveLoading from "../../loaders/WaveLoading";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { FaUser, FaLock } from "react-icons/fa";
 
 function Login() {
   let navigate = useNavigate();
@@ -65,7 +69,7 @@ function Login() {
             //save recieved details into local storage
             saveUserDetailsToLocalStorage(res.data, 3600000);
             setLoginStatus(true);
-            setTimeout(() => navigate("/"), 1000);
+            navigate("/");
           }
         })
         .catch((err) => console.log(err));
@@ -82,25 +86,19 @@ function Login() {
           </p>
         </div>
         <div className="right">
-          {loginStatus ? (
-            <div className="msg success">
-              <span>Login successful. Redirecting...</span>
-            </div>
-          ) : displayLoaderAfterSubmiting ? (
-            <div className={"msg loader"}>
-              <WaveLoading loadFor={"loading-for-auth"} />
-            </div>
-          ) : (
+          {
             <div
               className={
                 "msg error" + (errors.length === 0 ? " hide-error-div" : "")
               }
             >
               {errors.map((item) => (
-                <span key={item.id}>{item.errorMessage}</span>
+                <Alert variant="filled" severity="error" key={item.id}>
+                  {item.errorMessage}
+                </Alert>
               ))}
             </div>
-          )}
+          }
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -109,6 +107,7 @@ function Login() {
               name="username"
               onChange={handleChange}
             />
+            <FaUser className="user__icon icon" />
             <input
               type="password"
               placeholder="password"
@@ -116,9 +115,22 @@ function Login() {
               name="password"
               onChange={handleChange}
             />
-            <button disabled={loginStatus}>LOGIN</button>
-            <span>
-              Don't have an account? <Link to="/signup"> SIGNUP</Link>
+            <FaLock className="lock__icon icon" />
+            <button disabled={loginStatus}>
+              {displayLoaderAfterSubmiting ? (
+                <Box sx={{ display: "flex" }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                "LOGIN"
+              )}
+            </button>
+            <span className="text">
+              Don't have an account?{" "}
+              <Link to="/signup">
+                {" "}
+                <span>SIGNUP</span>
+              </Link>
             </span>
           </form>
         </div>

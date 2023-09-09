@@ -47,6 +47,10 @@ function Chat({
     };
   }, [errors]);
 
+  useEffect(() => {
+    setMessages(null);
+  }, [currentChat]);
+
   const scrollRef = useRef(null);
   useEffect(() => {
     if (scrollRef.current && !messagesUpdates.updated) {

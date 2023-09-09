@@ -1,72 +1,60 @@
 .form-container {
-  background-color: hsl(0deg, 100%, 74%);
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100vh;
-}
-.form-container .success {
-  color: green;
-}
-.form-container .error {
-  color: red;
-}
-.form-container .msg span {
-  font-size: 1rem;
-  align-self: center;
+  width: 100%;
 }
 .form-container form input {
   height: 20%;
   border-radius: 5px;
   border: 1px solid hsl(246deg, 25%, 77%);
-  padding: 5px 15px;
+  padding: 5px 0px;
+  padding-left: 40px;
+  font-size: 1.3rem;
 }
-.signup form input {
-  height: 15%;
-}
-.signup form {
-  background-color: #fff;
-  height: 90%;
+.form-container form {
+  background-color: rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   padding: 0 20px;
   padding-top: 8px;
   border-radius: 8px;
-}
-.login form {
-  background-color: #fff;
-  height: 65%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding: 0 20px;
-  padding-top: 8px;
-  border-radius: 8px;
+  position: relative;
 }
 
 .form-container form input:focus {
   outline: none;
 }
 .form-container form input::placeholder {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .form-container form button {
-  background-color: hsl(154deg, 59%, 51%);
+  background-color: #fff;
   border: none;
   height: 20%;
-  color: #fff;
+  color: #121212;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 550;
 }
 .form-container form button:hover {
-  opacity: 0.6;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
-.form-container .right form span {
+.form-container .right form .text {
   margin: 0 auto;
   font-size: 1rem;
   margin-bottom: 10px;
-  color: hsl(0deg, 100%, 74%);
+  color: #fff;
+}
+.form-container .right form .text span {
+  color: rgb(144, 202, 249);
 }
 a:link {
   text-decoration: none;
@@ -74,25 +62,7 @@ a:link {
 .form-container .hide-error-div {
   visibility: hidden;
 }
-.form-container .msg {
-  background-color: #fff;
-  height: fit-content;
-  min-height: 25%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 10px;
-  gap: 5px;
-  border-radius: 8px;
-}
 
-.form-container .error {
-  border: 1px solid red;
-}
-
-.form-container .success {
-  border: 1px solid green;
-}
 .form-container .left h2 {
   font-size: 1.8rem;
 }
@@ -118,6 +88,12 @@ a:link {
 .form-container form button:disabled {
   background-color: #dddddd;
   cursor: not-allowed;
+}
+.form-container .icon {
+  color: #121212;
+  position: absolute;
+  font-size: 1.3rem;
+  left: 4.5%;
 }
 @media (max-width: 700px) {
   .form-container .left {

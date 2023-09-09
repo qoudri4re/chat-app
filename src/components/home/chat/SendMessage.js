@@ -5,6 +5,7 @@ import { MdKeyboardVoice } from "react-icons/md";
 import { TbSend } from "react-icons/tb";
 import { client, requestHeaderConfig } from "../../../utils/axios-request";
 import { generateUniqueId } from "../utils/functions";
+import Avatar from "@mui/material/Avatar";
 
 function SendMessage({
   currentChat,
@@ -207,18 +208,18 @@ function SendMessage({
         multiple
       />
       <div className="right">
-        <div className="icon-background">
+        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
           <TbSend className="icon" onClick={sendMessage} />
-        </div>
-        <div className="icon-background">
+        </Avatar>
+        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
           <BsEmojiSmile className="icon" />
-        </div>
-        <div className="icon-background">
+        </Avatar>
+        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
           <GrAttachment className="icon" onClick={selectImageForUpload} />
-        </div>
-        <div className="icon-background">
+        </Avatar>
+        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
           <MdKeyboardVoice className="icon" />
-        </div>
+        </Avatar>
       </div>
     </div>
   );

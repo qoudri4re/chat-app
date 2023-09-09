@@ -3,6 +3,7 @@ import { client, requestHeaderConfig } from "../../../utils/axios-request";
 import Message from "./Message";
 import WaveLoading from "../../loaders/WaveLoading";
 import EmptyChat from "../../empty/EmptyChat";
+import Skeleton from "@mui/material/Skeleton";
 
 function ChatArea({
   userDetails,
@@ -210,7 +211,30 @@ function ChatArea({
   } else {
     return (
       <div className="chat-area">
-        <WaveLoading loadFor="loading-for-chat-area" />
+        <Skeleton
+          variant="rounded"
+          width={210}
+          height={85}
+          className="skeleton-loader sender"
+        />
+        <Skeleton
+          variant="rounded"
+          width={210}
+          height={85}
+          className="skeleton-loader receiver"
+        />
+        <Skeleton
+          variant="rounded"
+          width={210}
+          height={85}
+          className="skeleton-loader sender"
+        />
+        <Skeleton
+          variant="rounded"
+          width={210}
+          height={85}
+          className="skeleton-loader receiver"
+        />
       </div>
     );
   }

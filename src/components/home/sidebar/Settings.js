@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { GrClose } from "react-icons/gr";
 import { BiCamera } from "react-icons/bi";
 import image from "./chatlist/default-image.jpg";
 import { client, requestHeaderConfig } from "../../../utils/axios-request";
@@ -7,8 +6,10 @@ import { v4 as uuidv4 } from "uuid";
 import WaveLoading from "../../loaders/WaveLoading";
 import { saveUserDetailsToLocalStorage } from "../../auth/utils/functions";
 import { AiOutlineCloudUpload } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
+import Avatar from "@mui/material/Avatar";
+import CircularProgress from "@mui/material/CircularProgress";
 
-//TODO display loader before api
 function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
   const [userInfo, setUserInfo] = useState(null);
   const [newDetails, setNewDetails] = useState({
@@ -203,7 +204,7 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
         )}
 
         <div className="settings-header">
-          <GrClose onClick={showOrCloseSettings} className="icon" />
+          <MdCancel onClick={showOrCloseSettings} className="icon" />
         </div>
         <div className="upload-image">
           {!uploadedImage ? (
@@ -243,11 +244,13 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
               onChange={fileOnchange}
             />
           </form>
-          {showUploadButton ? (
-            <AiOutlineCloudUpload className="icon" onClick={upload} />
-          ) : (
-            <BiCamera className="icon" onClick={clickFileUploadInput} />
-          )}
+          <Avatar className="icon">
+            {showUploadButton ? (
+              <AiOutlineCloudUpload onClick={upload} />
+            ) : (
+              <BiCamera onClick={clickFileUploadInput} />
+            )}
+          </Avatar>
         </div>
         <div className="form-row">
           <p>Username</p>
@@ -284,7 +287,7 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
   } else {
     return (
       <div className="loading-wave">
-        <WaveLoading loadFor={"loading-for-settings"} />
+        <CircularProgress />
       </div>
     );
   }

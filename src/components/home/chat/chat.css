@@ -1,5 +1,4 @@
 .chat {
-  background-color: #f4f5f5;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -42,7 +41,8 @@
   justify-content: space-between;
   align-items: center;
   height: 10%;
-  background-color: #474e68;
+  background-color: #121212;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
 }
 .mobile-view .chat-components {
   height: 100vh;
@@ -76,25 +76,27 @@
 }
 .chat-header .left {
   display: flex;
-  gap: 8px;
   height: 100%;
   align-items: center;
   cursor: pointer;
-  color: #d9d9d9;
-  min-width: 15%;
-  width: fit-content;
+  color: #fff;
+  width: 50%;
   padding-left: 8px;
+  gap: 2%;
 }
 .chat-header .left .username-status {
   height: 100%;
   display: flex;
   align-items: center;
-  width: 60%;
+  width: 86%;
 }
 .chat-header .left .image-online-status {
   height: 65%;
-  width: 30%;
-  border-radius: 50%;
+  width: 12%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chat-header .right {
@@ -104,6 +106,7 @@
   align-items: center;
   width: 15%;
   gap: 10px;
+  /* background-color: red; */
 }
 .chat-without-profile .chat-header .right {
   width: 10%;
@@ -132,7 +135,6 @@
 }
 
 .chat-area {
-  background-color: #6b728e;
   height: 80%;
   display: flex;
   flex-direction: column;
@@ -141,11 +143,29 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+.chat-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-area::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.chat-area::-webkit-scrollbar-thumb {
+  background: rgb(102, 100, 255);
+  border-radius: 10px;
+  height: 20px;
+}
 .chat-area .message-container {
-  background-color: #50577a;
+  background-color: rgba(255, 255, 255, 0.12);
   width: fit-content;
   max-width: 50%;
   min-width: 25%;
+  padding: 10px 10px;
+  position: relative;
+}
+.skeleton-loader {
+  width: fit-content;
   padding: 10px 10px;
   position: relative;
 }
@@ -356,8 +376,8 @@
 }
 .send-message {
   display: flex;
-  /* position: absolute; */
-  background-color: #474e68;
+  /* background-color: #474e; */
+  border-top: 2px solid rgba(255, 255, 255, 0.12);
 }
 .send-message #file__upload {
   display: none;
@@ -379,8 +399,8 @@
   width: 65%;
 }
 .send-message input {
-  background-color: #6b728e;
-  color: #f5f5f5;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
   outline: none;
   border: none;
   padding-left: 15px;

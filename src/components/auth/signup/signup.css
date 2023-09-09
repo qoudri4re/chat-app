@@ -1,0 +1,18 @@
+.signup form {
+  height: 90%;
+}
+.signup form input {
+  height: 15%;
+}
+.signup form button {
+  height: 15%;
+}
+.signup .user__icon {
+  top: 10%;
+}
+.signup .lock__icon {
+  top: 50.5%;
+}
+.signup .email__icon {
+  top: 30.5%;
+}

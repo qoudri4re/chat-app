@@ -3,7 +3,7 @@ import ChatListItem from "./ChatListItem";
 import "./chatList.css";
 import EmptyChat from "../../../empty/EmptyChat";
 import EmptySearch from "../../../empty/EmptySearch";
-import WaveLoading from "../../../loaders/WaveLoading";
+import ChatListSkeleton from "../../../loaders/ChatListSkeleton";
 
 function ChatList({
   handleChatClick,
@@ -39,7 +39,15 @@ function ChatList({
   } else if (!friendsDetails && search) {
     return <div className="search-bar-msg">type any keyword to search</div>;
   } else {
-    return <WaveLoading loadFor={"loading-for-chatList"} />;
+    return (
+      <div className="chatlist">
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+      </div>
+    );
   }
 }
 

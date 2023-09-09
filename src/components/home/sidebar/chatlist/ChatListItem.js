@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import default_image from "./default-image.jpg";
+import Avatar from "@mui/material/Avatar";
 
 function ChatList({
   id,
@@ -10,6 +11,7 @@ function ChatList({
   profile_img,
 }) {
   const [profileImgLoaded, setProfileImgLoaded] = useState(false);
+
   return (
     <div className="chat-list-item" onClick={() => handleChatClick(id)}>
       <div className="left">
@@ -24,16 +26,25 @@ function ChatList({
           ) : (
             ""
           )}
-          <img
-            src={
-              profile_img === "default-image"
-                ? default_image
-                : profileImgLoaded
-                ? profile_img
-                : default_image
-            }
-            alt=""
-          />
+          {profile_img === "default-image" ? (
+            <Avatar
+              src={default_image}
+              sx={{
+                width: 50,
+                height: 50,
+              }}
+            />
+          ) : profileImgLoaded ? (
+            <Avatar alt="{username}" src={profile_img} />
+          ) : (
+            <Avatar
+              sx={{
+                width: 50,
+                height: 50,
+              }}
+              src={default_image}
+            />
+          )}
         </div>
         <div className="chat-details">
           <h3>{username}</h3>

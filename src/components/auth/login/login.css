@@ -1,0 +1,12 @@
+.login form {
+  height: 65%;
+}
+.login form button {
+  height: 20%;
+}
+.login .user__icon {
+  top: 12%;
+}
+.login .lock__icon {
+  top: 38%;
+}

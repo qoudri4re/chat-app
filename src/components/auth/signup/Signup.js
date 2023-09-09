@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../auth.css";
+import "./signup.css";
 import { Link, useNavigate } from "react-router-dom";
 import { client } from "../../../utils/axios-request";
-import WaveLoading from "../../loaders/WaveLoading";
+import { MdOutlineAlternateEmail } from "react-icons/md";
+import { FaUser, FaLock } from "react-icons/fa";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 import {
   retrieveUserDetailsFromLocalStorage,
@@ -124,25 +129,19 @@ function Signup() {
           </p>
         </div>
         <div className="right">
-          {registrationStatus ? (
-            <div className="msg success">
-              <span>Registration successful. Redirecting...</span>
-            </div>
-          ) : displayLoaderAfterSubmiting ? (
-            <div className={"msg loader"}>
-              <WaveLoading loadFor={"loading-for-auth"} />
-            </div>
-          ) : (
+          {
             <div
               className={
                 "msg error" + (errors.length === 0 ? " hide-error-div" : "")
               }
             >
               {errors.map((item) => (
-                <span key={item.id}>{item.errorMessage}</span>
+                <Alert variant="filled" severity="error" key={item.id}>
+                  {item.errorMessage}
+                </Alert>
               ))}
             </div>
-          )}
+          }
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -151,6 +150,7 @@ function Signup() {
               onChange={handleChange}
               name="username"
             />
+            <FaUser className="user__icon icon" />
             <input
               type="email"
               placeholder="email"
@@ -159,6 +159,7 @@ function Signup() {
               onChange={handleChange}
               required
             />
+            <MdOutlineAlternateEmail className="email__icon icon" />
             <input
               type="password"
               placeholder="password"
@@ -166,9 +167,21 @@ function Signup() {
               name="password"
               onChange={handleChange}
             />
-            <button disabled={registrationStatus}>SIGNUP</button>
-            <span>
-              Have an account? <Link to="/login">LOGIN</Link>
+            <FaLock className="lock__icon icon" />
+            <button disabled={registrationStatus}>
+              {displayLoaderAfterSubmiting ? (
+                <Box sx={{ display: "flex" }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                "SIGNUP"
+              )}
+            </button>
+            <span className="text">
+              Have an account?{" "}
+              <Link to="/login">
+                <span>LOGIN</span>
+              </Link>
             </span>
           </form>
         </div>

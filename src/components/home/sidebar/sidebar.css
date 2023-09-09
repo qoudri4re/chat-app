@@ -1,12 +1,22 @@
 .sidebar {
-  background-color: #393053;
-  /* background-color: #474e68; */
-  padding: 10px 0;
   color: #d9d9d9;
-  padding: 10px;
   overflow-y: scroll;
   height: 100vh;
   overflow: auto;
+  border-right: 2px solid rgba(255, 255, 255, 0.12);
+}
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgb(102, 100, 255);
+  border-radius: 10px;
+  height: 20px;
 }
 .sidebar .header {
   display: flex;
@@ -16,6 +26,9 @@
   position: sticky;
   top: 0;
   z-index: 999;
+  /* background-color: green; */
+  padding: 10px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
 }
 .mobile-view .sidebar .header {
   height: 18%;
@@ -52,14 +65,17 @@
   height: 30px;
   border-radius: 2px;
   border: none;
-  background-color: #a8c5e5;
+  background-color: rgba(255, 255, 255, 0.5);
   padding-left: 10px;
+  color: #fff;
+  letter-spacing: 2px;
 }
 .sidebar .header input:focus {
   outline: none;
 }
 .sidebar .header input::placeholder {
   color: #fff;
+  letter-spacing: 1px;
 }
 .header .right .icon {
   font-size: 1.8rem;
@@ -83,6 +99,7 @@
   flex-direction: column;
   gap: 5%;
   position: relative;
+  padding: 10px;
 }
 .settings .settings-header {
   display: flex;
@@ -105,7 +122,7 @@
 .settings .upload-image .icon {
   position: absolute;
   font-size: 2rem;
-  color: red;
+  color: #fff;
   bottom: 8%;
   right: 7%;
 }
@@ -130,8 +147,13 @@
   border-radius: 5px;
   border: none;
 }
+.settings button:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
 .settings button:disabled {
   cursor: not-allowed;
+  color: #fff;
 }
 .settings .msg-error {
   background-color: red;
