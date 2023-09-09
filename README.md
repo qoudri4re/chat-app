@@ -1,10 +1,10 @@
 ### CHAT APP
 
-A chatapp created with the MERN stack.
+A chatapp created with the MERN stack and Material UI.
 
 ### features
 
-1. Login and signup functionality.
+1. Login and signup.
 2. Sending and recieving messages.
 3. Search for registered users.
 4. Settings.
@@ -21,5 +21,8 @@ A chatapp created with the MERN stack.
 5. Archive chats.
 6. Unread messages count. :heavy_check_mark:
 7. Notifications.
+8. Voice messages.
+9. Video call.
+10. Audio call.
 
 [view live](https://react-project-chat-app.netlify.app/)
