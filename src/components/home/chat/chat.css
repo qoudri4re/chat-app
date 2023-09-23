@@ -9,22 +9,12 @@
   height: 100%;
 }
 .chat .chat__error__modal {
-  background-color: red;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  min-height: 10%;
-  height: fit-content;
-
   min-width: 38%;
-  width: fit-content;
-  padding: 1em;
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
   z-index: 999;
-  gap: 0.2em;
 }
 .chat .chat__error__modal .close__icon {
   align-self: flex-end;
@@ -234,6 +224,37 @@
   flex-direction: column;
   gap: 10px;
   color: #f5f5f5;
+}
+.message-container .raw__message {
+  min-height: 50px;
+  height: fit-content;
+  width: fit-content;
+  min-width: 100%;
+}
+.message-container .raw__message .top {
+  width: 100%;
+  display: flex;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.message-container .raw__message .top .download__text {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.message-container .raw__message .hidden {
+  display: none;
+}
+.message-container .raw__message .top .icon__background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+}
+.message-container .raw__message .icon {
+  font-size: 1.8rem;
 }
 .message-container .message p {
   font-size: 1.1rem;

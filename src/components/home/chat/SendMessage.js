@@ -6,6 +6,7 @@ import { TbSend } from "react-icons/tb";
 import { client, requestHeaderConfig } from "../../../utils/axios-request";
 import { generateUniqueId } from "../utils/functions";
 import Avatar from "@mui/material/Avatar";
+import RecordAudio from "./mediaMessage/RecordAudio";
 
 function SendMessage({
   currentChat,
@@ -19,6 +20,17 @@ function SendMessage({
 }) {
   const [message, setMessage] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState(null);
+  const [recordAudio, setRecordAudio] = useState(false);
+
+  useEffect(() => {
+    if (recordAudio) {
+      setRecordAudio(false);
+    }
+  }, [currentChat]);
+
+  function toogleRecordAudio() {
+    setRecordAudio(!recordAudio);
+  }
 
   const sendMessage = (e) => {
     if (e.type === "click" || (e.type === "keypress" && e.key === "Enter")) {
@@ -154,6 +166,59 @@ function SendMessage({
       setUploadedFiles(filesToUpload);
     }
   }
+  function sendAudioMessage(mediaBlobUrl) {
+    console.log(mediaBlobUrl);
+    const audioUrl = mediaBlobUrl;
+    console.log(audioUrl);
+    const fileName = "audio.wav";
+
+    fetch(audioUrl)
+      .then((response) => response.blob())
+      .then((blobData) => {
+        const formData = new FormData();
+        const audioFile = new File([blobData], fileName, {
+          type: "audio/wav",
+        });
+        if (audioFile.size / 1048576 <= 5) {
+          formData.append("files", audioFile);
+          formData.append("from", userDetails.userID);
+          formData.append("to", currentChat._id);
+          sendFilesToServer(formData);
+        } else {
+          setErrors(["Voice message is too large, beyond 5MB"]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrors(["Something went wrong, try again"]);
+      });
+  }
+
+  function sendFilesToServer(formData) {
+    client
+      .post("/uploadMultipleFiles", formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        if (res.data.errors.length) {
+          setErrors(res.data.errors);
+        }
+        if (res.data.uploadedFiles.length) {
+          socket.current.emit("sendFileMessage", {
+            to: currentChat._id,
+            from: userDetails.userID,
+            uniqueId: generateUniqueId(),
+            uploadedFiles: res.data.uploadedFiles,
+          });
+          setMessages((prevValue) => [...prevValue, ...res.data.uploadedFiles]);
+        }
+        setUploadedFiles(null);
+      })
+      .catch((err) => console.log(err));
+  }
+
   useEffect(() => {
     if (uploadedFiles) {
       const formData = new FormData();
@@ -163,64 +228,59 @@ function SendMessage({
       }
       formData.append("from", userDetails.userID);
       formData.append("to", currentChat._id);
-      client
-        .post("/uploadMultipleFiles", formData, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.errors.length) {
-            setErrors(res.data.errors);
-          }
-          if (res.data.uploadedFiles.length) {
-            socket.current.emit("sendFileMessage", {
-              to: currentChat._id,
-              from: userDetails.userID,
-              uniqueId: generateUniqueId(),
-              uploadedFiles: res.data.uploadedFiles,
-            });
-            setMessages((prevValue) => [
-              ...prevValue,
-              ...res.data.uploadedFiles,
-            ]);
-          }
-          setUploadedFiles(null);
-        })
-        .catch((err) => console.log(err));
+      sendFilesToServer(formData);
     }
   }, [uploadedFiles]);
+
   return (
     <div className="send-message">
-      <input
-        type="text"
-        placeholder="type a message..."
-        name="message"
-        value={message}
-        onKeyPress={sendMessage}
-        onChange={handleInputChange}
-      />
-      <input
-        type="file"
-        id="file__upload"
-        name="image"
-        onChange={fileOnChange}
-        multiple
-      />
-      <div className="right">
-        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
-          <TbSend className="icon" onClick={sendMessage} />
-        </Avatar>
-        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
-          <BsEmojiSmile className="icon" />
-        </Avatar>
-        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
-          <GrAttachment className="icon" onClick={selectImageForUpload} />
-        </Avatar>
-        <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}>
-          <MdKeyboardVoice className="icon" />
-        </Avatar>
-      </div>
+      {recordAudio ? (
+        <RecordAudio
+          toogleRecordAudio={toogleRecordAudio}
+          sendAudioMessage={sendAudioMessage}
+        />
+      ) : (
+        <>
+          <input
+            type="text"
+            placeholder="type a message..."
+            name="message"
+            value={message}
+            onKeyPress={sendMessage}
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            id="file__upload"
+            name="image"
+            onChange={fileOnChange}
+            multiple
+          />
+          <div className="right">
+            <Avatar
+              sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}
+            >
+              <TbSend className="icon" onClick={sendMessage} />
+            </Avatar>
+            <Avatar
+              sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}
+            >
+              <BsEmojiSmile className="icon" />
+            </Avatar>
+            <Avatar
+              sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}
+            >
+              <GrAttachment className="icon" onClick={selectImageForUpload} />
+            </Avatar>
+            <Avatar
+              sx={{ bgcolor: "rgba(255, 255, 255, 0.3)", color: "white" }}
+              onClick={toogleRecordAudio}
+            >
+              <MdKeyboardVoice className="icon" />
+            </Avatar>
+          </div>
+        </>
+      )}
     </div>
   );
 }

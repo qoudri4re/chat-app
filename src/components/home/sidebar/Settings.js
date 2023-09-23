@@ -3,12 +3,12 @@ import { BiCamera } from "react-icons/bi";
 import image from "./chatlist/default-image.jpg";
 import { client, requestHeaderConfig } from "../../../utils/axios-request";
 import { v4 as uuidv4 } from "uuid";
-import WaveLoading from "../../loaders/WaveLoading";
 import { saveUserDetailsToLocalStorage } from "../../auth/utils/functions";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import Avatar from "@mui/material/Avatar";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 
 function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
   const [userInfo, setUserInfo] = useState(null);
@@ -42,6 +42,22 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
     };
     fetchUserDetails();
   }, [userDetails, setUserDetails]);
+
+  useEffect(() => {
+    if (updateStatus) {
+      setTimeout(() => {
+        setUpdateStatus(false);
+      }, 3000);
+    }
+  }, [updateStatus]);
+
+  useEffect(() => {
+    if (errors.length) {
+      setTimeout(() => {
+        setErrors([]);
+      }, 3000);
+    }
+  }, [errors]);
 
   function update() {
     setDisplayLoader(true);
@@ -99,7 +115,7 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
     setNewDetails({ ...newDetails, [e.target.name]: e.target.value });
     if (e.target.name === "username") {
       if (
-        e.target.value !== userInfo.username ||
+        (e.target.value !== userInfo.username && e.target.value !== "") ||
         (newDetails.email !== "" && newDetails.email !== userInfo.email) ||
         (newDetails.password !== "" &&
           newDetails.password !== userInfo.password)
@@ -109,7 +125,7 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
     }
     if (e.target.name === "email") {
       if (
-        e.target.value !== userInfo.email ||
+        (e.target.value !== userInfo.email && e.target.value !== "") ||
         (newDetails.password !== "" &&
           newDetails.password !== userInfo.password) ||
         (newDetails.username !== "" &&
@@ -120,7 +136,7 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
     }
     if (e.target.name === "password") {
       if (
-        e.target.value !== userInfo.password ||
+        (e.target.value !== userInfo.password && e.target.value !== "") ||
         (newDetails.username !== "" &&
           newDetails.username !== userInfo.username) ||
         (newDetails.email !== "" && newDetails.email !== userInfo.email)
@@ -188,17 +204,15 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
     return (
       <div className="settings">
         {updateStatus ? (
-          <div className="msg msg-success">updated</div>
-        ) : displayLoader ? (
-          <div className={"msg loader"}>
-            <WaveLoading loadFor={"loading-for-update"} />
-          </div>
+          <Alert variant="filled" className="msg" severity="success">
+            Updated!
+          </Alert>
         ) : errors.length > 0 ? (
-          <div className="msg msg-error">
+          <Alert variant="filled" className="msg" severity="error">
             {errors.map((item) => (
               <span key={uuidv4()}>{item}</span>
             ))}
-          </div>
+          </Alert>
         ) : (
           ""
         )}
@@ -280,7 +294,7 @@ function Settings({ showOrCloseSettings, userDetails, setUserDetails }) {
           />
         </div>
         <button disabled={buttonDisabled} onClick={update}>
-          save changes
+          {displayLoader ? <CircularProgress /> : "Save changes"}
         </button>
       </div>
     );

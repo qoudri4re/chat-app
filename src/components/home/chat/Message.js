@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import MessageOptions from "./MessageOptions";
 import { BiErrorAlt } from "react-icons/bi";
 import AudioPlayer from "./AudioPlayer";
+// import AudioPlayer from "./mediaPlayers/Audio/AudioPlayer";
 import VideoPlayer from "./VideoPlayer";
 import ImageViewer from "./ImageViewer";
+import { IoMdDownload } from "react-icons/io";
+
 function Message({
   id,
   senderOrReciever,
@@ -26,6 +29,7 @@ function Message({
   messageName,
 }) {
   const [editText, setEditText] = useState(message);
+  const downloadRef = useRef();
 
   function handleEditTyping(e) {
     setEditText(e.target.value);
@@ -33,6 +37,10 @@ function Message({
 
   function stopPropagation(e) {
     e.stopPropagation();
+  }
+
+  function initiateDownload() {
+    downloadRef.current.click();
   }
 
   let displayContext =
@@ -65,7 +73,7 @@ function Message({
       ) : (
         ""
       )}
-      <div className={"message"}>
+      <div className={`message ${messageType}__message`}>
         {editMessage?.messageId === id ? (
           <textarea value={editText} onChange={handleEditTyping}></textarea>
         ) : messageDeleted ? (
@@ -91,9 +99,24 @@ function Message({
         ) : messageType === "image" ? (
           <ImageViewer messageUrl={messageUrl} />
         ) : messageType === "raw" ? (
-          <a href={messageUrl} download={messageName}>
-            Download file {messageName}
-          </a>
+          <div className="top">
+            <div className="icon__background" onClick={initiateDownload}>
+              <IoMdDownload className="icon" />
+            </div>
+            <div className="download__text">
+              <p href={messageUrl} download={messageName}>
+                {messageName}
+              </p>
+              <a
+                ref={downloadRef}
+                href={messageUrl}
+                className="hidden"
+                download={messageName}
+              >
+                {messageName}
+              </a>
+            </div>
+          </div>
         ) : (
           ""
         )}
